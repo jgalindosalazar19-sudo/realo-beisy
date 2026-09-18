@@ -24,7 +24,7 @@ window.PAGE_CONFIG = {
       { text: "Eres especial", photo: 5 },
       { text: "Te amo mucho", photo: 6 },
       { text: "Eres mi paz", photo: 7 },
-      { text: "Tu sonrisa brilla más que las estrellas", photo: 8 }
+      { text: "Tu sonrisa brilla", photo: 8 }
     ],
     photos: [
       { src: "photos/1.jpg", caption: "El inicio de todo" },

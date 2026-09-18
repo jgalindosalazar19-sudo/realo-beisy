@@ -115,7 +115,6 @@
   ------------------------------------------------------------ */
   const Galaxy = (() => {
     let photoEls = [];
-    const stage = $("#galaxy-stage");
 
     function makePhoto(p, idx) {
       const limit = Math.min(window.innerWidth || 390, 520);
@@ -227,11 +226,11 @@
         el.style.setProperty("--dm", (4.5 + (i % 4) * 0.8).toFixed(1) + "s");
         el.style.setProperty("--md", (-(i * 1.3)).toFixed(1) + "s");
         if (C.galaxy.photos[photoIdx]) {
-          el.addEventListener("click", () => openLightbox(photoIdx));
+          el.addEventListener("click", () => openLightbox(photoIdx, text));
           el.addEventListener("keydown", (e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              openLightbox(photoIdx);
+              openLightbox(photoIdx, text);
             }
           });
         }
@@ -266,35 +265,22 @@
         photoEls.push(gph);
         disc.appendChild(gph);
         ph.classList.add("orbit-enter");
-        ph.style.transitionDelay = Math.min(i * 0.08, 0.9).toFixed(2) + "s";
+        ph.style.animationDelay = Math.min(i * 0.08, 0.9).toFixed(2) + "s";
         ph.addEventListener("click", (e) => {
           e.stopPropagation();
           openLightbox(i);
         });
       });
-
-      let io = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((en) => {
-            if (en.isIntersecting) {
-              photoEls.forEach((el) => el.__photo.classList.add("orbit-visible"));
-              obs.disconnect();
-            }
-          });
-        },
-        { threshold: 0.2 }
-      );
-      io.observe(stage);
     }
 
-    function openLightbox(i) {
+    function openLightbox(i, customText) {
       const p = C.galaxy.photos[i];
       const el = photoEls[i];
       const inner = el ? $(".orbit-photo", el) : null;
-      if (!p || !el) return;
+      if (!p) return;
 
       $("#lightbox-img").src = p.src;
-      $("#lightbox-caption").textContent = p.caption || "";
+      $("#lightbox-caption").textContent = customText || p.caption || "";
       $("#photo-lightbox").classList.add("open");
       document.body.style.overflow = "hidden";
       if (inner) {

@@ -364,31 +364,43 @@ img { -webkit-user-drag: none; user-select: none; }
 }
 
 .galaxy-msg.gold {
-  color: var(--yellow-soft);
+  color: #241a4d;
 }
 
 .galaxy-msg.is-btn {
   pointer-events: auto;
   cursor: pointer;
-  padding: 7px 13px;
-  border-radius: 999px;
-  min-width: 44px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 214, 10, 0.10);
-  border: 1px solid rgba(255, 214, 10, 0.32);
-  box-shadow: 0 0 14px rgba(255, 214, 10, 0.25);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  width: 58px;
+  height: 58px;
+  padding: 6px;
+  border-radius: 50%;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.15;
+  white-space: normal;
+  color: #241a4d;
+  opacity: 1;
+  text-shadow: none;
+  background: radial-gradient(circle at 34% 28%, #fff3b0, #ffd60a 46%, #e6a400 80%);
+  box-shadow:
+    inset 0 -5px 9px rgba(180, 120, 0, 0.45),
+    inset 0 3px 7px rgba(255, 255, 255, 0.55),
+    0 6px 18px rgba(255, 214, 10, 0.4);
+  border: none;
+  animation: planetBob var(--dm, 5s) ease-in-out infinite;
+  animation-delay: var(--md, 0s);
+  will-change: transform;
 }
 
-.galaxy-msg.is-btn:active {
-  background: rgba(255, 214, 10, 0.22);
-  border-color: rgba(255, 214, 10, 0.7);
-  transform: translate(-50%, -50%) scale(0.94);
+.galaxy-msg.is-btn:active { filter: brightness(1.25); }
+
+@keyframes planetBob {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50%      { transform: translate(-50%, -50%) translateY(-6px); }
 }
 
 @keyframes msgFade {
@@ -459,13 +471,12 @@ img { -webkit-user-drag: none; user-select: none; }
 }
 
 .orbit-enter {
-  opacity: 0;
-  transform: scale(0.5);
+  animation: photoPop 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
-.orbit-enter.orbit-visible {
-  opacity: 1;
-  transform: scale(1);
+@keyframes photoPop {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .orbit-photo.spin-burst {
