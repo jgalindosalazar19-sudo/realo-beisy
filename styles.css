@@ -2035,7 +2035,8 @@ img { -webkit-user-drag: none; user-select: none; }
   .love-aura, .love-heart-final, .love-core, .love-flash,
   .open-letter-btn::after, .love-final::before,
   .letter-overlay, .letter-close, .letter-card, .envelope::after,
-  .galaxy-final, .galaxy-final-heart, .galaxy-final-line, .galaxy-rain, .photo-ring {
+  .galaxy-final, .galaxy-final-heart, .galaxy-final-line, .galaxy-rain, .photo-ring,
+  .month-phone, .phone-screen, .pin-dot, .keypad .kp-btn, .month-action {
     animation: none !important;
     transition: none !important;
 }
@@ -2104,6 +2105,227 @@ img { -webkit-user-drag: none; user-select: none; }
   10%  { opacity: 1; }
   100% { transform: translateY(115vh) translateX(var(--rx, 30px)) rotate(140deg); opacity: 0.9; }
 }
+
+/* ============================================================
+   NUESTRO MES — celular con pantalla de bloqueo + contador
+   ============================================================ */
+.month-phone {
+  position: relative;
+  width: min(92vw, 340px);
+  height: min(72vh, 560px);
+  margin: 18px auto 0;
+  border-radius: 42px;
+  border: 8px solid #171223;
+  background: #0c0816;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 2px rgba(255, 214, 10, 0.22);
+  overflow: hidden;
+}
+
+.phone-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 18px 14px;
+  text-align: center;
+}
+
+.phone-status {
+  align-self: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: rgba(255, 233, 176, 0.85);
+}
+
+/* --- pantalla de bloqueo --- */
+.phone-lock {
+  background:
+    radial-gradient(120% 55% at 50% 0%, rgba(255, 180, 40, 0.24), transparent 60%),
+    radial-gradient(120% 60% at 50% 115%, rgba(70, 30, 12, 0.55), transparent 60%),
+    linear-gradient(180deg, #241a3d, #120b22 60%, #0a0514);
+}
+
+.phone-lock .phone-status {
+  margin-bottom: auto;
+}
+
+.phone-lock-title {
+  font-family: var(--font-display);
+  font-size: clamp(21px, 6.4vw, 27px);
+  line-height: 1.25;
+  background: linear-gradient(180deg, #fff, #ffe14d 55%, #f5a800);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 16px rgba(255, 214, 10, 0.6));
+}
+
+.phone-lock-hint {
+  margin: 8px 0 16px;
+  font-size: 13px;
+  color: rgba(255, 214, 10, 0.8);
+}
+
+.pin-dots {
+  display: flex;
+  gap: 12px;
+  min-height: 16px;
+  margin-bottom: 20px;
+}
+
+.pin-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 214, 10, 0.55);
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.pin-dot.is-filled {
+  background: #ffd60a;
+  border-color: #ffe14d;
+  box-shadow: 0 0 12px rgba(255, 214, 10, 0.95);
+}
+
+.phone-lock.shake { animation: lockShake 0.45s ease; }
+
+@keyframes lockShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-11px); }
+  40% { transform: translateX(11px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(6px); }
+}
+
+.keypad {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 13px 18px;
+  width: 100%;
+  max-width: 262px;
+  padding-bottom: 6px;
+}
+
+.kp-btn {
+  justify-self: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 214, 10, 0.42);
+  background: rgba(255, 214, 10, 0.07);
+  color: #ffe9b0;
+  font-size: 21px;
+  font-weight: 600;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+
+.kp-btn:active { transform: scale(0.9); background: rgba(255, 214, 10, 0.22); }
+
+.kp-btn--util {
+  border-color: rgba(255, 110, 100, 0.5);
+  background: rgba(255, 80, 70, 0.1);
+  color: #ffb0a8;
+  font-size: 17px;
+}
+
+/* --- pantalla contador (post desbloqueo) --- */
+.phone-counter {
+  background:
+    radial-gradient(90% 45% at 50% 34%, rgba(255, 200, 50, 0.22), transparent 62%),
+    linear-gradient(180deg, #1d1433, #0d0820 70%, #070312);
+}
+
+.phone-counter .phone-status { margin-bottom: auto; }
+
+.counter-hero {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.counter-months {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 19vw, 98px);
+  line-height: 1;
+  background: linear-gradient(180deg, #fff, #ffe14d 55%, #f5a800);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 26px rgba(255, 214, 10, 0.75));
+}
+
+.counter-months-label {
+  margin-top: 6px;
+  font-size: 17px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 214, 10, 0.9);
+}
+
+.counter-detail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 16px;
+  margin: 28px 6px 22px;
+  padding: 14px 10px;
+  border-radius: 16px;
+  background: rgba(255, 214, 10, 0.05);
+  border: 1px solid rgba(255, 214, 10, 0.14);
+}
+
+.cd-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+}
+
+.cd-block b {
+  font-family: var(--font-display);
+  font-size: 23px;
+  color: #ffe14d;
+  text-shadow: 0 0 14px rgba(255, 214, 10, 0.55);
+}
+
+.cd-block span {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 233, 176, 0.75);
+}
+
+.month-actions {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.month-action {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 214, 10, 0.55);
+  background: rgba(255, 214, 10, 0.08);
+  color: #ffe9b0;
+  font-size: 15px;
+  font-weight: 600;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+
+.month-action:active { transform: scale(0.97); background: rgba(255, 214, 10, 0.2); }
 
 /* aro dorado que nace cuando se abre una foto */
 .photo-ring {

@@ -75,6 +75,10 @@ window.PAGE_CONFIG = {
   timeline: {
     title: "Nuestro Mes",
     subtitle: "22 de septiembre · Un mes juntos",
+    lockTitle: "Feliz mes mi amor",
+    lockHint: "Ingresá fecha de noviazgo",
+    pinCode: "02222026",
+    anniversary: new Date(2026, 1, 22, 10, 3, 0),
     counterTitle: "Llevamos juntos...",
     celebrationTitle: "¿Qué va a ser? 💛",
     celebrationCTAs: ["¿Qué va a ser? 👇", "Quedate un mes más", "Quedate otro mes más", "Quedate para siempre 💛"],

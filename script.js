@@ -1233,85 +1233,189 @@
   })();
 
   /* ------------------------------------------------------------
-     NUESTRO MES — contador + timeline + celebración
+     NUESTRO MES — candado telefónico + contador en tiempo real
   ------------------------------------------------------------ */
   const Counter = (() => {
-    const start = C.unlockDates.timeline;
+    const ANN = new Date(C.timeline.anniversary);
+    const PIN = String(C.timeline.pinCode || "02222026");
+    const REDUCED = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let dotEls = [];
+    let buffer = "";
+    let locked = true;
     let intv = null;
 
-    function tick() {
-      const diff = Date.now() - start.getTime();
-      const days = Math.max(0, Math.floor(diff / 86400000));
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      $("#counter-days").textContent = days + 1;
-      $("#counter-time").textContent =
-        String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    function addMonths(d, n) {
+      const r = new Date(d);
+      const day = r.getDate();
+      r.setDate(1);
+      r.setMonth(r.getMonth() + n);
+      const last = new Date(r.getFullYear(), r.getMonth() + 1, 0).getDate();
+      r.setDate(Math.min(day, last));
+      r.setHours(ANN.getHours(), ANN.getMinutes(), ANN.getSeconds(), 0);
+      return r;
     }
+
+    function parts(now) {
+      if (now < ANN) return { y: 0, mo: 0, d: 0, h: 0, mi: 0, s: 0 };
+      let anchor = new Date(ANN);
+      let months = 0;
+      while (true) {
+        const nxt = addMonths(anchor, 1);
+        if (nxt > now) break;
+        anchor = nxt;
+        months++;
+      }
+      const sec = Math.floor((now - anchor) / 1000);
+      return {
+        y: Math.floor(months / 12),
+        mo: months % 12,
+        d: Math.floor(sec / 86400),
+        h: Math.floor((sec % 86400) / 3600),
+        mi: Math.floor((sec % 3600) / 60),
+        s: sec % 60,
+      };
+    }
+
+    function label(n, one, many) { return n === 1 ? one : many; }
 
     function buildTitle() {
       $("#timeline-title").textContent = C.timeline.title;
       $("#timeline-subtitle").textContent = C.timeline.subtitle;
+      $("#phone-lock-title").textContent = C.timeline.lockTitle;
+      $("#phone-lock-hint").textContent = C.timeline.lockHint;
     }
 
-    function buildMilestones() {
-      const list = $("#timeline-list");
-      if (list.childElementCount) return;
-      C.timeline.milestones.forEach((m, i) => {
-        const el = document.createElement("div");
-        el.className = "tl-item hidden-rev";
-        el.innerHTML =
-          `<div class="tl-day">Día ${m.days}</div>` +
-          `<div class="tl-title">${m.title}</div>` +
-          `<div class="tl-text">${m.text}</div>`;
-        list.appendChild(el);
-      });
-      const ep = document.createElement("div");
-      ep.className = "tl-epilogue";
-      ep.textContent = C.timeline.epilogue;
-      list.appendChild(ep);
+    function buildDots() {
+      const box = $("#pin-dots");
+      box.textContent = "";
+      dotEls = [];
+      for (let i = 0; i < PIN.length; i++) {
+        const d = document.createElement("span");
+        d.className = "pin-dot";
+        box.appendChild(d);
+        dotEls.push(d);
+      }
+    }
 
-      const io = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((en) => {
-            if (en.isIntersecting) {
-              en.target.classList.remove("hidden-rev");
-              en.target.classList.add("revealed");
-              io.unobserve(en.target);
-            }
-          });
+    function renderDots() {
+      dotEls.forEach((el, i) => el.classList.toggle("is-filled", i < buffer.length));
+    }
+
+    function clearBuffer() { buffer = ""; renderDots(); }
+
+    function shock() {
+      const lock = $("#phone-lock");
+      lock.classList.remove("shake");
+      void lock.offsetWidth;
+      lock.classList.add("shake");
+      setTimeout(() => lock.classList.remove("shake"), 500);
+      setTimeout(clearBuffer, 430);
+    }
+
+    function startCounter() {
+      if (intv) clearInterval(intv);
+      tick();
+      intv = setInterval(tick, 1000);
+    }
+
+    function unlock() {
+      locked = false;
+      const lock = $("#phone-lock");
+      const counter = $("#phone-counter");
+      if (REDUCED()) {
+        lock.hidden = true;
+        counter.hidden = false;
+        startCounter();
+        return;
+      }
+      lock.style.pointerEvents = "none";
+      gsap.to(lock, {
+        opacity: 0, scale: 0.82, rotateX: 30, duration: 0.42, ease: "power2.in",
+        onComplete() {
+          lock.hidden = true;
+          gsap.set(lock, { opacity: 1, scale: 1, rotateX: 0, clearProps: "pointer-events" });
         },
-        { threshold: 0.25 }
+      });
+      counter.hidden = false;
+      gsap.fromTo(
+        counter,
+        { opacity: 0, scale: 0.9, rotateX: -22, y: 26 },
+        { opacity: 1, scale: 1, rotateX: 0, y: 0, duration: 0.5, ease: "back.out(1.5)" }
       );
-      $$(".tl-item", list).forEach((el) => io.observe(el));
+      explode(counter, false);
+      startCounter();
+    }
 
-      $("#celebrate-btn").textContent = C.timeline.celebrationCTAs[0];
+    function press(k) {
+      if (!locked) return;
+      if (k === "clear") { clearBuffer(); return; }
+      if (k === "back") { buffer = buffer.slice(0, -1); renderDots(); return; }
+      if (buffer.length >= PIN.length) return;
+      buffer += k;
+      renderDots();
+      if (buffer.length === PIN.length) {
+        if (buffer === PIN) unlock();
+        else shock();
+      }
+    }
+
+    function kpBtn(text, key, util) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "kp-btn" + (util ? " kp-btn--util" : "");
+      b.textContent = text;
+      b.setAttribute("aria-label", text);
+      b.addEventListener("click", () => press(key));
+      return b;
+    }
+
+    function buildKeypad() {
+      const pad = $("#keypad");
+      pad.textContent = "";
+      for (let i = 1; i <= 9; i++) pad.appendChild(kpBtn(String(i), i));
+      pad.appendChild(kpBtn("C", "clear", true));
+      pad.appendChild(kpBtn("0", 0));
+      pad.appendChild(kpBtn("⌫", "back", true));
+    }
+
+    function statusClock() {
+      const e1 = $("#phone-time");
+      const e2 = $("#phone-time-2");
+      const up = () => {
+        const t = new Date();
+        const s = String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+        if (e1) e1.textContent = s;
+        if (e2) e2.textContent = s;
+      };
+      up();
+      setInterval(up, 30000);
+    }
+
+    function tick() {
+      const p = parts(Date.now());
+      $("#mc-years").textContent = p.y;
+      $("#mc-months").textContent = p.mo;
+      $("#mc-months-label").textContent = label(p.mo, "mes", "meses");
+      $("#mc-days").textContent = p.d;
+      $("#mc-hours").textContent = p.h;
+      $("#mc-minutes").textContent = p.mi;
+      $("#mc-seconds").textContent = p.s;
     }
 
     function onEnter() {
       buildTitle();
-      buildMilestones();
+      buildDots();
+      buildKeypad();
+      clearBuffer();
+      locked = true;
+      gsap.set([$("#phone-lock"), $("#phone-counter")], { opacity: 1, scale: 1, rotateX: 0 });
+      $("#phone-lock").hidden = false;
+      $("#phone-counter").hidden = true;
+      $("#phone-lock").style.pointerEvents = "";
       if (intv) clearInterval(intv);
-      tick();
-      intv = setInterval(tick, 1000);
-      bindCelebrate();
     }
 
-    function bindCelebrate() {
-      const btn = $("#celebrate-btn");
-      btn.textContent = C.timeline.celebrationCTAs[0];
-      let step = 0;
-      btn.addEventListener("click", () => {
-        step = (step + 1) % C.timeline.celebrationCTAs.length;
-        btn.textContent = C.timeline.celebrationCTAs[step];
-        explode(btn);
-        if (step === C.timeline.celebrationCTAs.length - 1) {
-          btn.style.pointerEvents = "none";
-          btn.style.filter = "brightness(1.15)";
-        }
-      });
-    }
+    statusClock();
 
     return { onEnter };
   })();
