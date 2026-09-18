@@ -14,17 +14,17 @@ window.PAGE_CONFIG = {
     title: "Flores Amarillas",
     subtitle: "19 de septiembre · Día de las Flores Amarillas",
     intro:
-      "Dicen que regalar flores amarillas es un gesto de amor y de verano eterno. Hoy la galaxia se tiñe de amarillo solo para vos: cada estrella, cada planeta, es un pedacito de nosotros. Tocá una estrella para mirarla de cerca.",
+      "Dicen que regalar flores amarillas es un gesto de amor y de verano eterno. Tocá los mensajes de la galaxia y descubrí la foto de cada momento nuestro.",
     messages: [
-      "Te amo",
-      "Amor de mi vida",
-      "Eres preciosa",
-      "Siempre juntos",
-      "Mi love",
-      "Eres especial",
-      "Te amo mucho",
-      "Eres mi paz",
-      "Tu sonrisa brilla más que las estrellas"
+      { text: "Te amo", photo: 0 },
+      { text: "Amor de mi vida", photo: 1 },
+      { text: "Eres preciosa", photo: 2 },
+      { text: "Siempre juntos", photo: 3 },
+      { text: "Mi love", photo: 4 },
+      { text: "Eres especial", photo: 5 },
+      { text: "Te amo mucho", photo: 6 },
+      { text: "Eres mi paz", photo: 7 },
+      { text: "Tu sonrisa brilla más que las estrellas", photo: 8 }
     ],
     photos: [
       { src: "photos/1.jpg", caption: "El inicio de todo" },

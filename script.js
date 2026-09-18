@@ -213,16 +213,29 @@
         { x: 30, y: 10 }, { x: 70, y: 12 }, { x: 24, y: 82 }, { x: 76, y: 80 },
         { x: 50, y: 90 }, { x: 92, y: 30 }, { x: 8, y: 38 }, { x: 50, y: 10 }
       ];
-      msgs.forEach((txt, i) => {
+      msgs.forEach((m, i) => {
         if (!slots[i]) return;
-        const m = document.createElement("div");
-        m.className = "galaxy-msg" + (i % 3 === 0 ? " gold" : "");
-        m.textContent = txt;
-        m.style.left = slots[i].x + "%";
-        m.style.top = slots[i].y + "%";
-        m.style.setProperty("--dm", (4.5 + (i % 4) * 0.8).toFixed(1) + "s");
-        m.style.setProperty("--md", (-(i * 1.3)).toFixed(1) + "s");
-        host.appendChild(m);
+        const text = typeof m === "string" ? m : m.text;
+        const photoIdx = typeof m === "string" ? i : (m.photo ?? i);
+        const el = document.createElement("div");
+        el.className = "galaxy-msg is-btn" + (i % 3 === 0 ? " gold" : "");
+        el.textContent = text;
+        el.setAttribute("role", "button");
+        el.setAttribute("tabindex", "0");
+        el.style.left = slots[i].x + "%";
+        el.style.top = slots[i].y + "%";
+        el.style.setProperty("--dm", (4.5 + (i % 4) * 0.8).toFixed(1) + "s");
+        el.style.setProperty("--md", (-(i * 1.3)).toFixed(1) + "s");
+        if (C.galaxy.photos[photoIdx]) {
+          el.addEventListener("click", () => openLightbox(photoIdx));
+          el.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openLightbox(photoIdx);
+            }
+          });
+        }
+        host.appendChild(el);
       });
     }
 

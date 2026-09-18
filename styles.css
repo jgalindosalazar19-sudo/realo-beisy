@@ -367,6 +367,30 @@ img { -webkit-user-drag: none; user-select: none; }
   color: var(--yellow-soft);
 }
 
+.galaxy-msg.is-btn {
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 7px 13px;
+  border-radius: 999px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 214, 10, 0.10);
+  border: 1px solid rgba(255, 214, 10, 0.32);
+  box-shadow: 0 0 14px rgba(255, 214, 10, 0.25);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.galaxy-msg.is-btn:active {
+  background: rgba(255, 214, 10, 0.22);
+  border-color: rgba(255, 214, 10, 0.7);
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
 @keyframes msgFade {
   0%, 100% { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
   15%, 85% { opacity: 0.95; transform: translate(-50%, -50%) translateY(0); }
