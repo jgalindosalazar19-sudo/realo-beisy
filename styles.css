@@ -2111,11 +2111,11 @@ img { -webkit-user-drag: none; user-select: none; }
    ============================================================ */
 .month-phone {
   position: relative;
-  width: min(92vw, 340px);
-  height: min(72vh, 560px);
-  margin: 18px auto 0;
-  border-radius: 42px;
-  border: 8px solid #171223;
+  width: min(94vw, 400px);
+  height: min(80vh, 640px);
+  margin: 16px auto 0;
+  border-radius: 46px;
+  border: 9px solid #171223;
   background: #0c0816;
   box-shadow:
     0 30px 70px rgba(0, 0, 0, 0.55),
@@ -2181,8 +2181,8 @@ img { -webkit-user-drag: none; user-select: none; }
 }
 
 .pin-dot {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 2px solid rgba(255, 214, 10, 0.55);
   transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
@@ -2208,21 +2208,21 @@ img { -webkit-user-drag: none; user-select: none; }
   margin-top: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 13px 18px;
+  gap: 14px 20px;
   width: 100%;
-  max-width: 262px;
+  max-width: 286px;
   padding-bottom: 6px;
 }
 
 .kp-btn {
   justify-self: center;
-  width: 60px;
-  height: 60px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   border: 1px solid rgba(255, 214, 10, 0.42);
   background: rgba(255, 214, 10, 0.07);
   color: #ffe9b0;
-  font-size: 21px;
+  font-size: 23px;
   font-weight: 600;
   transition: transform 0.08s ease, background 0.15s ease;
 }
@@ -2233,7 +2233,7 @@ img { -webkit-user-drag: none; user-select: none; }
   border-color: rgba(255, 110, 100, 0.5);
   background: rgba(255, 80, 70, 0.1);
   color: #ffb0a8;
-  font-size: 17px;
+  font-size: 18px;
 }
 
 /* --- pantalla contador (post desbloqueo) --- */
@@ -2254,7 +2254,7 @@ img { -webkit-user-drag: none; user-select: none; }
 
 .counter-months {
   font-family: var(--font-display);
-  font-size: clamp(64px, 19vw, 98px);
+  font-size: clamp(72px, 21vw, 116px);
   line-height: 1;
   background: linear-gradient(180deg, #fff, #ffe14d 55%, #f5a800);
   -webkit-background-clip: text;
@@ -2292,7 +2292,7 @@ img { -webkit-user-drag: none; user-select: none; }
 
 .cd-block b {
   font-family: var(--font-display);
-  font-size: 23px;
+  font-size: 26px;
   color: #ffe14d;
   text-shadow: 0 0 14px rgba(255, 214, 10, 0.55);
 }
@@ -2315,12 +2315,12 @@ img { -webkit-user-drag: none; user-select: none; }
 
 .month-action {
   width: 100%;
-  padding: 13px 16px;
+  padding: 15px 18px;
   border-radius: 999px;
   border: 1px solid rgba(255, 214, 10, 0.55);
   background: rgba(255, 214, 10, 0.08);
   color: #ffe9b0;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   transition: transform 0.08s ease, background 0.15s ease;
 }
