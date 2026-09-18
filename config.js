@@ -27,16 +27,16 @@ window.PAGE_CONFIG = {
       { text: "Tu sonrisa brilla", photo: 8 }
     ],
     photos: [
-      { src: "photos/1.jpg", caption: "El inicio de todo" },
-      { src: "photos/2.jpg", caption: "Nuestra primera risa compartida" },
-      { src: "photos/3.jpg", caption: "Ese día que no quisimos que terminara" },
-      { src: "photos/4.jpg", caption: "Tus flores amarillas, mi persona favorita" },
-      { src: "photos/5.jpg", caption: "Momentos simples, corazones grandes" },
-      { src: "photos/6.jpg", caption: "De tu mano, todo es mejor" },
-      { src: "photos/7.jpg", caption: "Nuestro mundo en una mirada" },
-      { src: "photos/8.jpg", caption: "El verano que se quedó conmigo" },
-      { src: "photos/9.jpg", caption: "Cada foto, un latido" },
-      { src: "photos/10.jpg", caption: "Y lo mejor está por venir" }
+      { src: "photos/1.jpg?v=2", caption: "El inicio de todo" },
+      { src: "photos/2.jpg?v=2", caption: "Nuestra primera risa compartida" },
+      { src: "photos/3.jpg?v=2", caption: "Ese día que no quisimos que terminara" },
+      { src: "photos/4.jpg?v=2", caption: "Tus flores amarillas, mi persona favorita" },
+      { src: "photos/5.jpg?v=2", caption: "Momentos simples, corazones grandes" },
+      { src: "photos/6.jpg?v=2", caption: "De tu mano, todo es mejor" },
+      { src: "photos/7.jpg?v=2", caption: "Nuestro mundo en una mirada" },
+      { src: "photos/8.jpg?v=2", caption: "El verano que se quedó conmigo" },
+      { src: "photos/9.jpg?v=2", caption: "Cada foto, un latido" },
+      { src: "photos/10.jpg?v=2", caption: "Y lo mejor está por venir" }
     ]
   },
 
