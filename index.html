@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=4" />
+  <link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
 
@@ -98,21 +98,38 @@
       </div>
     </header>
 
-    <div class="letter-intro" id="letter-intro-wrap">
-      <button class="envelope" id="envelope" aria-label="Abrir sobre">
-        <span class="env-flap"></span>
-        <span class="env-wax">💌</span>
-        <span class="env-label">Tenés un mensaje</span>
-      </button>
+    <div class="love-stage" id="love-stage">
+      <div class="love-aura" aria-hidden="true"></div>
+      <canvas id="love-canvas" class="love-canvas" aria-hidden="true"></canvas>
+      <div class="love-core" id="love-core" aria-hidden="true"></div>
+      <div id="love-galaxies" aria-hidden="true"></div>
+      <div id="love-embers" class="love-embers" aria-hidden="true"></div>
+      <div id="love-beats" class="love-beats" aria-hidden="true"></div>
+      <div class="love-zones" id="love-zones" aria-hidden="true"></div>
+      <div class="love-messages" id="love-messages" aria-hidden="true"></div>
+      <p class="love-kicker" id="love-kicker"></p>
+      <div class="love-final" id="love-final" hidden>
+        <span class="love-heart-final" aria-hidden="true">🩶</span>
+        <p class="love-final-line" id="love-final-line"></p>
+        <button id="open-letter-btn" class="open-letter-btn">Abrir carta 💌</button>
+      </div>
+      <div class="love-flash" id="love-flash" aria-hidden="true"></div>
     </div>
 
-    <div class="letter-paper" id="letter-paper" hidden>
-      <h3 class="letter-title" id="letter-paper-title"></h3>
-      <div class="letter-body" id="letter-body"></div>
-      <p class="letter-sign" id="letter-signature"></p>
-    </div>
+    <div class="letter-overlay" id="letter-overlay" hidden>
+      <button class="letter-close" id="letter-close" aria-label="Cerrar carta">✕</button>
 
-    <div class="postcards" id="postcards"></div>
+      <div class="env-scene" id="env-scene">
+        <div class="envelope" id="envelope" aria-hidden="true">
+          <div class="letter-card" id="letter-card">
+            <h3 class="letter-title" id="letter-paper-title"></h3>
+            <div class="letter-body" id="letter-body"></div>
+          </div>
+        </div>
+      </div>
+
+      <button id="love-replay" class="love-replay" hidden>↺ Viajar de nuevo</button>
+    </div>
   </section>
 
   <!-- ============ SECCIÓN 3: NUESTRO MES ============ -->
@@ -146,7 +163,7 @@
   <audio id="music-audio" loop preload="none"></audio>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="config.js?v=4"></script>
-  <script src="script.js?v=5"></script>
+  <script src="config.js?v=7"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>

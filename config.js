@@ -42,23 +42,29 @@ window.PAGE_CONFIG = {
 
   letter: {
     title: "Amor y Amistad",
-    subtitle: "21 de septiembre · Día de la Amistad (y del amor)",
-    envelopeLabel: "Tenés un mensaje para vos",
-    letterTitle: "Para la dueña de mis días",
+    subtitle: "21 de septiembre · Un viaje entre galaxias",
+    journey: {
+      kicker: "Alistá tu corazón: nos vamos de viaje entre galaxias 💫",
+      messages: [
+        "Te amo mucho, mi niña",
+        "La dueña de mi moto",
+        "Mi tesoro más sagrado",
+        "Estemos juntos toda la vida",
+        "Mi compañera de vida",
+        "Mi sonrisa hermosa",
+        "Mis ojos enormes",
+        "Mi futura esposa"
+      ],
+      cycles: 2,
+      pace: 0.62,
+      finalLine: "TE AMOOOOOOOOOOOOOOOOOOOOOO 🩶",
+      cta: "Abrir carta 💌"
+    },
+    letterTitle: "Para la dueña de mi vida",
     letterBody: [
-      "Hoy se celebra el Día del Amor y la Amistad, y no pude evitar pensar que con vos no hace falta que exista una fecha para celebrar lo nuestro.",
-      "Porque primero fuimos amigues, nos reímos, nos contamos todo, y de ese cariño nació algo más grande. Y acá estoy yo, enamorado de mi mejor amiga.",
-      "Gracias por cada mensaje, cada llamada, cada momento que ya es eterno en mi memoria. Gracias por elegirme todos los días.",
-      "Que el universo me regale muchísimos años más a tu lado. Feliz día, mi amor."
-    ],
-    signature: "Con todo mi corazón, de tu persona ✔",
-    postcards: [
-      { title: "Mi lugar favorito", text: "Donde sea que estés, ese es mi lugar favorito.", icon: "heart" },
-      { title: "Te elijo hoy...", text: "...y te voy a elegir todos los días.", icon: "star" },
-      { title: "Nuestra canción", text: "Cada canción me recuerda a vos, y todas me gustan.", icon: "music" },
-      { title: "Reírme de todo", text: "Mi mejor momento: cuando nos reímos de nada por horas.", icon: "smile" },
-      { title: "Mi paz", text: "Tu voz es mi lugar seguro.", icon: "home" },
-      { title: "Siempre juntos", text: "Pase lo que pase, elegimos caminar juntos.", icon: "infinity" }
+      "Mi niña hermosa, te amo con mi vida entera. Eres lo más hermoso que me pudo pasar en este mundo.",
+      "En el día del amor y la amistad quiero demostrarte mi amor con esto. Quizás sea poco, pero te lo hice con todo el amor del mundo, CON TODO EL AMOR QUE TENGO PARA TI.",
+      "Te amo, mi princesa hermosa. Feliz día del amor y la amistad."
     ]
   },
 

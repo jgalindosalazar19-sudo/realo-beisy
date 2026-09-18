@@ -101,7 +101,7 @@
       showView(card.dataset.view);
       const kv = card.dataset.view;
       if (kv === "galaxy") Galaxy.enter();
-      if (kv === "letter") Later.ensureIntro();
+      if (kv === "letter") Love.enter();
       if (kv === "timeline") Counter.onEnter();
     });
 
@@ -645,11 +645,13 @@
 
     function bindLightbox() {
       const lb = $("#photo-lightbox");
+      if (!lb) return;
       const close = () => {
         lb.classList.remove("open");
         document.body.style.overflow = "";
       };
-      $("#lightbox-close").addEventListener("click", close);
+      const closeBtn = $("#lightbox-close");
+      if (closeBtn) closeBtn.addEventListener("click", close);
       lb.addEventListener("click", (e) => {
         if (e.target === lb) close();
       });
@@ -666,69 +668,520 @@
   })();
 
   /* ------------------------------------------------------------
-     AMOR Y AMISTAD — sobre + carta + postales
+     AMOR Y AMISTAD — viaje entre galaxias + carta
   ------------------------------------------------------------ */
-  const Later = (() => {
-    let introDone = false;
+  const Love = (() => {
+    let entered = false;
+    let raf = 0;
+    let flowKill = null;
+    let zoneKills = [];
+    const warpState = { burst: 0 };
 
-    function ensureIntro() {
+    function fillTexts() {
       const t = C.letter.title,
         s = C.letter.subtitle;
       $("#letter-title").textContent = t;
       $("#letter-subtitle").textContent = s;
-
-      if (introDone) return;
-      introDone = true;
-      buildPostcards();
-
-      const env = $("#envelope");
-      const label = $(".env-label", env);
-      label.textContent = C.letter.envelopeLabel;
-
-      const paper = $("#letter-paper");
       $("#letter-paper-title").textContent = C.letter.letterTitle;
       $("#letter-body").innerHTML = C.letter.letterBody.map((p) => `<p>${p}</p>`).join("");
-      $("#letter-signature").textContent = C.letter.signature;
+      const sig = $("#letter-signature");
+      if (sig) {
+        sig.textContent = C.letter.signature || "";
+        sig.hidden = !C.letter.signature;
+      }
+    }
 
-      env.addEventListener("click", () => {
-        if (env.classList.contains("open")) return;
-        env.classList.add("open");
-        explode(env);
-        setTimeout(() => {
-          env.classList.add("done");
-          paper.hidden = false;
-          paper.classList.add("wobble");
-          setTimeout(() => paper.classList.remove("wobble"), 550);
-          setTimeout(() => paper.scrollIntoView({ behavior: "smooth", block: "center" }), 250);
-        }, 900);
+    function detach() {
+      warpState.burst = 0;
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      if (flowKill) { flowKill(); flowKill = null; }
+      if (zoneKills.length) { zoneKills.forEach((k) => k.kill()); zoneKills = []; }
+      const canvas = $("#love-canvas");
+      if (canvas) { canvas.width = 0; canvas.height = 0; }
+      const msgs = $("#love-messages");
+      if (msgs) { msgs.classList.remove("love-static"); msgs.innerHTML = ""; }
+      const gals = $("#love-galaxies");
+      if (gals) gals.innerHTML = "";
+      const embers = $("#love-embers");
+      if (embers) embers.innerHTML = "";
+      const beats = $("#love-beats");
+      if (beats) beats.innerHTML = "";
+      const zones = $("#love-zones");
+      if (zones) zones.innerHTML = "";
+      const final = $("#love-final");
+      if (final) final.hidden = true;
+    }
+
+    /* túnel de estrellas en hipervelocidad */
+    function startWarp() {
+      const canvas = $("#love-canvas");
+      const stage = $("#love-stage");
+      if (!canvas || !stage) return;
+      const ctx = canvas.getContext("2d");
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const gray = ["#c9c9d4", "#e8e8ee", "#9b9baa"];
+      const red = ["#ff2e5f", "#ff6b85", "#ff3b57"];
+      let w = 0, h = 0, cx = 0, cy = 0, rot = 0, t = 0;
+      const R = () => Math.hypot(w, h) / 2;
+      const stars = [];
+      const comets = [];
+      const nebulas = [
+        { x: 0.28, y: 0.32, r: 0.36, cr: [200, 26, 70], ar: 0.7, dx: 0.002, dy: 0.0011 },
+        { x: 0.74, y: 0.62, r: 0.42, cr: [140, 38, 95], ar: 1.4, dx: -0.0016, dy: 0.0009 }
+      ];
+
+      function resize() {
+        const r = stage.getBoundingClientRect();
+        w = Math.max(1, r.width);
+        h = Math.max(1, r.height);
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cx = w / 2;
+        cy = h / 2;
+      }
+      resize();
+      window.addEventListener("resize", resize, { passive: true });
+
+      for (let i = 0; i < 130; i++) {
+        const far = i < 72;
+        stars.push({
+          ang: Math.random() * Math.PI * 2,
+          d: Math.random() * 60,
+          spd: far ? 0.5 + Math.random() * 0.9 : 1.6 + Math.random() * 2.2,
+          len: far ? 4 + Math.random() * 6 : 12 + Math.random() * 16,
+          r: far ? 0.6 + Math.random() * 0.6 : 1.3 + Math.random() * 1.5,
+          a: far ? 0.35 + Math.random() * 0.35 : 0.5 + Math.random() * 0.45,
+          tw: Math.random() * Math.PI * 2,
+          col: far ? gray[i % gray.length] : red[i % red.length],
+          glow: !far && i % 9 === 0
+        });
+      }
+
+      const loop = () => {
+        t += 0.016;
+        rot += 0.0008;
+        const brake = warpState.burst;
+        if (brake > 0) warpState.burst = Math.max(0, brake - 0.018);
+        const pulse = (1 + 0.14 * Math.sin(t * 0.55)) * (1 + brake * 2.2);
+        ctx.clearRect(0, 0, w, h);
+
+        for (const nb of nebulas) {
+          nb.x += nb.dx;
+          nb.y += nb.dy;
+          if (nb.x < 0.08 || nb.x > 0.92) nb.dx *= -1;
+          if (nb.y < 0.08 || nb.y > 0.92) nb.dy *= -1;
+          const nx = nb.x * w;
+          const ny = nb.y * h;
+          const nr = nb.r * Math.min(w, h);
+          const al = 0.5 * (0.55 + 0.45 * Math.sin(t * 0.4 + nb.ar)) * (1 + brake * 0.4);
+          const gr = ctx.createRadialGradient(nx, ny, 0, nx, ny, nr);
+          gr.addColorStop(0, `rgba(${nb.cr[0]},${nb.cr[1]},${nb.cr[2]},${(al * 0.5).toFixed(3)})`);
+          gr.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.fillStyle = gr;
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        const lim = R();
+        for (const s of stars) {
+          s.d += s.spd * pulse;
+          if (s.d > lim) { s.d = Math.random() * 20; s.ang = Math.random() * Math.PI * 2; }
+          const a = s.ang + rot;
+          const x = cx + Math.cos(a) * s.d;
+          const y = cy + Math.sin(a) * s.d * 1.05;
+          const alpha = Math.min(1, s.a * (s.d / 180 + 0.35)) * (0.82 + 0.18 * Math.sin(t * 2.2 + s.tw));
+          ctx.fillStyle = s.col;
+          const dots = s.glow ? 5 : 3;
+          for (let k = dots; k >= 0; k--) {
+            const back = s.d - s.len * k * 0.24;
+            if (back <= 0) continue;
+            const bx = cx + Math.cos(a) * back;
+            const by = cy + Math.sin(a) * back;
+            ctx.globalAlpha = alpha * (1 - k * 0.18);
+            ctx.beginPath();
+            ctx.arc(bx, by, Math.max(0.4, s.r * (1 - k * 0.14)), 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        if (comets.length < 7 && Math.random() < 0.014) {
+          const a = Math.PI * (1.04 + Math.random() * 0.42);
+          const sp = 170 + Math.random() * 200;
+          comets.push({
+            x: Math.random() * w,
+            y: -30 - Math.random() * 90,
+            vx: Math.cos(a) * sp,
+            vy: Math.sin(a) * sp,
+            life: 1,
+            col: ["#fff", "#ffd9e2", "#fff", "#ff9cb0"][Math.floor(Math.random() * 4)],
+            trail: []
+          });
+        }
+
+        for (let ci = comets.length - 1; ci >= 0; ci--) {
+          const c = comets[ci];
+          c.x += c.vx * 0.016;
+          c.y += c.vy * 0.016;
+          c.life -= 0.006;
+          c.trail.push({ x: c.x, y: c.y });
+          if (c.trail.length > 7) c.trail.shift();
+          const len = c.trail.length;
+          for (let k = 0; k < len; k++) {
+            const p = c.trail[k];
+            const f = (k / len) * c.life;
+            ctx.globalAlpha = Math.max(0, f * 0.75);
+            ctx.fillStyle = c.col;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2.1 - (k / len) * 1.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          if (c.life <= 0 || c.y > h + 60 || c.x < -60 || c.x > w + 60) comets.splice(ci, 1);
+        }
+        ctx.globalAlpha = 1;
+        raf = requestAnimationFrame(loop);
+      };
+      loop();
+    }
+
+    /* destello de hipervelocidad */
+    function flashOnce() {
+      const fl = $("#love-flash");
+      if (!fl) return;
+      fl.classList.remove("love-flash--on");
+      void fl.offsetWidth;
+      fl.classList.add("love-flash--on");
+    }
+
+    /* galaxias que pasan de largo durante el viaje */
+    function flyGalaxies() {
+      const layer = $("#love-galaxies");
+      const g = window.gsap;
+      const hues = ["g-red", "g-rose", "g-slate", "g-charcoal"];
+      for (let i = 0; i < 5; i++) {
+        const gal = document.createElement("div");
+        gal.className = "love-galaxy " + hues[i % hues.length];
+        const sz = 170 + Math.random() * 240;
+        gal.style.width = sz + "px";
+        gal.style.height = sz + "px";
+        gal.style.top = (6 + Math.random() * 66).toFixed(0) + "%";
+        layer.appendChild(gal);
+        const fromLeft = i % 2 === 0;
+        g.fromTo(gal,
+          { xPercent: fromLeft ? -160 : 160, scale: 0.45, opacity: 0, rotate: -35 },
+          { xPercent: fromLeft ? 140 : -140, scale: 1.5, opacity: 0.55, rotate: 30,
+            duration: 6.5 + Math.random() * 3, ease: "power2.inOut", delay: i * 3.2 });
+        setTimeout(() => gal.remove(), 32000);
+      }
+    }
+
+    /* latido del corazón: anillos rojos que expanden */
+    function buildBeats() {
+      const host = $("#love-beats");
+      if (!host) return;
+      host.innerHTML = "";
+      for (let i = 0; i < 3; i++) {
+        const b = document.createElement("div");
+        b.className = "love-beat";
+        b.style.animationDelay = (i * 1.2).toFixed(1) + "s";
+        host.appendChild(b);
+      }
+    }
+
+    /* ascuas rojas que suben desde abajo, algunas son corazoncitos */
+    function buildEmbers() {
+      const host = $("#love-embers");
+      if (!host) return;
+      host.innerHTML = "";
+      for (let i = 0; i < 18; i++) {
+        const e = document.createElement("div");
+        e.className = "love-ember";
+        e.style.left = (2 + Math.random() * 96).toFixed(1) + "%";
+        const sz = 3 + Math.random() * 4;
+        if (i % 7 === 0) {
+          e.textContent = "❤️";
+          e.classList.add("love-ember-heart");
+          e.style.fontSize = (sz * 3) + "px";
+          e.style.lineHeight = "1";
+        } else {
+          e.style.width = e.style.height = sz.toFixed(1) + "px";
+        }
+        e.style.setProperty("--ed", (7 + Math.random() * 6).toFixed(1) + "s");
+        e.style.setProperty("--edd", (-Math.random() * 13).toFixed(1) + "s");
+        e.style.setProperty("--ex", ((Math.random() - 0.5) * 80).toFixed(1) + "px");
+        host.appendChild(e);
+      }
+    }
+
+    /* planetas que rozan la cámara */
+    function flyPlanets() {
+      const layer = $("#love-galaxies");
+      const g = window.gsap;
+      const kinds = ["planet-red", "planet-gray"];
+      for (let i = 0; i < 2; i++) {
+        const pl = document.createElement("div");
+        pl.className = "love-planet " + kinds[i % 2];
+        const sz = 110 + Math.random() * 70;
+        pl.style.width = pl.style.height = sz + "px";
+        pl.style.left = "50%";
+        pl.style.top = "42%";
+        layer.appendChild(pl);
+        const fromLeft = i % 2 === 0;
+        g.fromTo(pl,
+          { xPercent: -50, yPercent: -50, scale: 0.25, opacity: 0, rotate: fromLeft ? 40 : -40 },
+          { xPercent: fromLeft ? 240 : -270, yPercent: fromLeft ? 110 : -80, scale: 2.1, opacity: 0.85,
+            rotate: fromLeft ? 140 : -140, duration: 8 + Math.random() * 2, ease: "power1.inOut", delay: 5 + i * 7 });
+        setTimeout(() => pl.remove(), 26000);
+      }
+    }
+
+    /* zonas del viaje: nombres de galaxias que vamos cruzando */
+    function scheduleZones() {
+      const host = $("#love-zones");
+      if (!host) return;
+      host.innerHTML = "";
+      const g = window.gsap;
+      const zones = C.letter.journey.zones || [];
+      zones.forEach((label, i) => {
+        const z = document.createElement("div");
+        z.className = "love-zone";
+        z.textContent = label;
+        host.appendChild(z);
+        const tl = g.timeline({ delay: 1.2 + i * 2.1 });
+        tl.fromTo(z, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" })
+          .to(z, { opacity: 1, duration: 1.7 })
+          .to(z, { opacity: 0, y: -8, duration: 0.5, ease: "power1.in" });
+        zoneKills.push(tl);
       });
     }
 
-    const ICONS = { heart: "💛", star: "⭐", music: "🎵", smile: "😄", home: "🏡", infinity: "∞" };
+    /* corazones que estallan desde el centro al llegar */
+    function heartBurst() {
+      const stage = $("#love-stage");
+      const r = stage.getBoundingClientRect();
+      const cx = r.width / 2;
+      const cy = r.height * 0.42;
+      const glyphs = ["❤️", "🌹", "💌"];
+      for (let i = 0; i < 12; i++) {
+        const e = document.createElement("div");
+        e.className = "love-burst";
+        e.textContent = glyphs[i % 3];
+        e.style.left = cx + "px";
+        e.style.top = cy + "px";
+        const ang = (i / 12) * Math.PI * 2;
+        const dist = 70 + Math.random() * 90;
+        e.style.setProperty("--ex", (Math.cos(ang) * dist).toFixed(0) + "px");
+        e.style.setProperty("--ey", (Math.sin(ang) * dist - 40).toFixed(0) + "px");
+        stage.appendChild(e);
+        setTimeout(() => e.remove(), 1300);
+      }
+    }
 
-    function buildPostcards() {
-      const wrap = $("#postcards");
-      if (wrap.childElementCount) return;
-      C.letter.postcards.forEach((pc) => {
-        const card = document.createElement("div");
-        card.className = "postcard";
-        card.innerHTML =
-          `<div class="pc-inner">
-             <div class="pc-face front">
-               <span class="pc-icon">${ICONS[pc.icon] || "💛"}</span>
-               <span class="pc-title">${pc.title}</span>
-               <span class="pc-hint">toca para dar vuelta</span>
-             </div>
-             <div class="pc-face back">
-               <span class="pc-text">${pc.text}</span>
-             </div>
-           </div>`;
-        card.addEventListener("click", () => card.classList.toggle("flipped"));
-        wrap.appendChild(card);
+    /* mensajes románticos cruzándose en el viaje */
+    function streamMessages(pool, onDone) {
+      const layer = $("#love-messages");
+      const g = window.gsap;
+      const msgs = C.letter.journey.messages || [];
+      const pace = C.letter.journey.pace || 0.9;
+      const glyphs = ["❤️", "🌹", "💌", "✦", "🌙", "💫"];
+      pool.forEach((mi, i) => {
+        const el = document.createElement("div");
+        const tier = [26, 32, 42, 54][mi % 4];
+        el.className = "love-msg " + (tier >= 42 ? "love-msg--near" : "love-msg--far");
+        el.textContent = msgs[mi] + (Math.random() < 0.4 ? " " + glyphs[(mi + i) % glyphs.length] : "");
+        el.style.fontSize = tier + "px";
+        el.style.top = (5 + Math.random() * 82).toFixed(1) + "%";
+        layer.appendChild(el);
+        const radial = mi % 4 === 3;
+        const start = i * pace;
+        let tl;
+        if (radial) {
+          el.classList.add("love-msg--radial");
+          const dur = 4.8 + Math.random() * 1.6;
+          tl = g.timeline({ delay: start });
+          tl.set(el, { left: "50%", xPercent: -50, scale: 0.45, opacity: 0, rotate: 0 })
+            .to(el, { opacity: 1, duration: 0.5 }, 0.15)
+            .to(el, { scale: 3.2, duration: dur, ease: "power1.out" }, 0)
+            .to(el, { opacity: 0, duration: dur * 0.35 }, dur * 0.65);
+          setTimeout(() => el.remove(), start * 1000 + dur * 1000 + 3200);
+        } else {
+          const fromLeft = i % 2 === 0;
+          const rot = fromLeft ? -4 : 4;
+          const dur = tier >= 42 ? 4.6 + Math.random() * 1.6 : 3.2 + Math.random() * 1.4;
+          tl = g.timeline({ delay: start });
+          tl.set(el, { xPercent: fromLeft ? -25 : 125, opacity: 0, rotate: rot, scale: 1 })
+            .to(el, { opacity: 1, duration: 0.4 }, 0.1)
+            .to(el, { xPercent: fromLeft ? 120 : -20, duration: dur, ease: "power1.inOut" }, 0)
+            .to(el, { opacity: 0, duration: dur * 0.14 }, dur * 0.86);
+          setTimeout(() => el.remove(), start * 1000 + dur * 1000 + 3200);
+        }
+      });
+      flowKill = g.delayedCall((pool.length - 1) * pace + 1.5, onDone);
+    }
+
+    function buildStatic() {
+      const layer = $("#love-messages");
+      const msgs = (C.letter.journey || {}).messages || [];
+      layer.classList.add("love-static");
+      msgs.forEach((m) => {
+        const el = document.createElement("div");
+        el.className = "love-msg-static";
+        el.textContent = m;
+        layer.appendChild(el);
       });
     }
 
-    return { ensureIntro };
+    function arrive() {
+      const final = $("#love-final");
+      final.hidden = false;
+      const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      if (window.gsap && !reduced) {
+        warpState.burst = 1;
+        flashOnce();
+        window.gsap.fromTo(final,
+          { opacity: 0, y: 26, scale: 0.9 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.6)" });
+        heartBurst();
+      } else {
+        final.style.opacity = "1";
+      }
+    }
+
+    function enter() {
+      fillTexts();
+      const stage = $("#love-stage");
+      const ov = $("#letter-overlay");
+      const sc = $("#env-scene");
+      $("#love-replay").hidden = true;
+      if (sc) sc.classList.remove("env-scene--open");
+      ov.hidden = true;
+      stage.style.display = "";
+      if (entered) detach();
+      entered = true;
+
+      const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      const fancy = !!window.gsap && !reduced;
+      const j = C.letter.journey || {};
+
+      const kicker = $("#love-kicker");
+      kicker.textContent = j.kicker || "";
+      $("#love-final-line").textContent = j.finalLine || "";
+      $("#open-letter-btn").textContent = j.cta || "Abrir carta 💌";
+
+      if (reduced) {
+        buildStatic();
+        arrive();
+        return;
+      }
+
+      startWarp();
+      if (window.gsap) {
+        const g = window.gsap;
+        buildBeats();
+        buildEmbers();
+        flyPlanets();
+        scheduleZones();
+        flyGalaxies();
+        flashOnce();
+        g.fromTo(kicker, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", delay: 0.2 });
+        g.to(kicker, { opacity: 0, y: -16, duration: 0.5, ease: "power1.in", delay: 2.4 });
+      }
+
+      const msgs = j.messages || [];
+      const cycles = Math.min(4, Math.max(1, j.cycles || 2));
+      const pool = [];
+      for (let c = 0; c < cycles; c++) {
+        const batch = msgs.map((m, i) => i);
+        for (let k = batch.length - 1; k > 0; k--) {
+          const r = Math.floor(Math.random() * (k + 1));
+          [batch[k], batch[r]] = [batch[r], batch[k]];
+        }
+        pool.push(...batch);
+      }
+
+      if (fancy) {
+        streamMessages(pool, () => setTimeout(arrive, 600));
+      } else {
+        buildStatic();
+        setTimeout(arrive, 2000);
+      }
+    }
+
+    function openLetter() {
+      const ov = $("#letter-overlay");
+      const sc = $("#env-scene");
+      const btn = $("#open-letter-btn");
+      const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      detach();
+      ov.hidden = false;
+      requestAnimationFrame(() => {
+        if (sc) sc.classList.add("env-scene--open");
+        if (!reduced) {
+          try { explode(btn, true); } catch (err) { console.warn("confetti:", err); }
+        }
+      });
+      if (reduced) {
+        setTimeout(() => { try { typeLetter(); } catch (err) { console.warn("type:", err); } }, 60);
+        return;
+      }
+      setTimeout(() => { try { typeLetter(); } catch (err) { console.warn("type:", err); } }, 1400);
+    }
+
+    function closeLetter(replay) {
+      const ov = $("#letter-overlay");
+      const sc = $("#env-scene");
+      if (twTimer) { clearInterval(twTimer); twTimer = null; }
+      if (sc) sc.classList.remove("env-scene--open");
+      ov.hidden = true;
+      if (replay) {
+        entered = false;
+        enter();
+      }
+    }
+
+    /* la carta se escribe sola, letra por letra */
+    let twTimer = null;
+    function typeLetter() {
+      const body = $("#letter-body");
+      if (!body) return;
+      const ps = Array.from(body.querySelectorAll("p"));
+      if (!ps.length) return;
+      if (twTimer) { clearInterval(twTimer); twTimer = null; }
+      const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      if (reduced) return;
+      const full = ps.map((p) => p.textContent);
+      ps.forEach((p) => (p.textContent = ""));
+      const sig = $("#letter-signature");
+      if (sig) sig.style.opacity = "0";
+      let pi = 0, ci = 0, wait = 0;
+      twTimer = setInterval(() => {
+        if (wait > 0) { wait--; return; }
+        const f = full[pi];
+        if (ci < f.length) {
+          ps[pi].textContent += f[ci];
+          ci++;
+        } else {
+          const last = pi === ps.length - 1;
+          pi++;
+          ci = 0;
+          if (pi >= ps.length) {
+            clearInterval(twTimer);
+            twTimer = null;
+            if (last) { const s = $("#letter-signature"); if (s) s.style.opacity = "1"; }
+            return;
+          }
+          wait = 10;
+        }
+      }, 14);
+    }
+
+    function bindLetter() {
+      $("#open-letter-btn").addEventListener("click", openLetter);
+      $("#letter-close").addEventListener("click", () => closeLetter(false));
+      $("#love-replay").addEventListener("click", () => closeLetter(true));
+    }
+
+    return { enter, bindLetter };
   })();
 
   /* ------------------------------------------------------------
@@ -818,13 +1271,15 @@
   /* ------------------------------------------------------------
      CONFETTI + corazoncitos
   ------------------------------------------------------------ */
-  function explode(anchor) {
+  function explode(anchor, love) {
     const layer = $("#confetti-layer");
     const rect = anchor.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
 
-    const colors = ["#ffd60a", "#ffe14d", "#f5a800", "#ff8fab", "#9ef01a", "#ffffff", "#ffb347"];
+    const colors = love
+      ? ["#ff2e5f", "#ff6b85", "#c40a3e", "#ffffff", "#ff93ab", "#8b0e35"]
+      : ["#ffd60a", "#ffe14d", "#f5a800", "#ff8fab", "#9ef01a", "#ffffff", "#ffb347"];
 
     for (let i = 0; i < 46; i++) {
       const el = document.createElement("div");
@@ -841,10 +1296,11 @@
       setTimeout(() => el.remove(), (dur + 0.6) * 1000);
     }
 
+    const glyphs = love ? ["❤️", "🌹", "💌"] : ["💛", "🌼"];
     for (let i = 0; i < 10; i++) {
       const h = document.createElement("div");
       h.className = "heart-pop";
-      h.textContent = Math.random() < 0.5 ? "💛" : "🌼";
+      h.textContent = glyphs[i % glyphs.length];
       h.style.left = cx + (Math.random() - 0.5) * 120 + "px";
       h.style.top = cy + "px";
       h.style.animationDelay = (Math.random() * 0.5).toFixed(2) + "s";
@@ -935,13 +1391,14 @@
   ------------------------------------------------------------ */
   function boot() {
     detectSection();
-    renderCards();
-    bindNav();
-    Galaxy.bindLightbox();
-    buildAmbient();
-    startShootingStars();
-    startButterflies();
-    setupMusic();
+    try { renderCards(); } catch (e) { console.warn("cards:", e); }
+    try { bindNav(); } catch (e) { console.warn("nav:", e); }
+    try { Love.bindLetter(); } catch (e) { console.warn("letter:", e); }
+    try { Galaxy.bindLightbox(); } catch (e) { console.warn("lightbox:", e); }
+    try { buildAmbient(); } catch (e) { console.warn("ambient:", e); }
+    try { startShootingStars(); } catch (e) { console.warn("stars:", e); }
+    try { startButterflies(); } catch (e) { console.warn("butterflies:", e); }
+    try { setupMusic(); } catch (e) { console.warn("music:", e); }
   }
 
   if (document.readyState === "loading") {
