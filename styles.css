@@ -2226,7 +2226,10 @@ img { -webkit-user-drag: none; user-select: none; }
   .month-phone, .phone-screen, .pin-dot, .keypad .kp-btn, .month-action,
   .landing-bg, .landing-glow, .landing-rays, .hero-badge::before, .hero-badge::after,
   .card-shine, .month-bg, .month-halo, .month-halo::before, .month-nebula,
-  .month-float, .star-dot {
+  .month-float, .star-dot,
+  .tap-spark, .unlock-card.unlocked .card-icon,
+  .unlock-card.unlocked .lock-badge::after,
+  .phone-lock::before, .phone-counter::before, .phone-lock-title {
     animation: none !important;
     transition: none !important;
 }
@@ -2650,4 +2653,101 @@ img { -webkit-user-drag: none; user-select: none; }
 @keyframes ringOut {
   0%   { transform: scale(0.4); opacity: 1; }
   100% { transform: scale(3.4); opacity: 0; }
+}
+
+/* ============================================================
+   PASE DE AMOR ENCENDIDO — love field + galletas encendidas
+   ============================================================ */
+#love-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.tap-spark {
+  position: fixed;
+  z-index: 999;
+  font-size: 13px;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(255, 214, 10, 0.8));
+  animation: tapSpark 0.9s ease-out forwards;
+}
+
+@keyframes tapSpark {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  18%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(1.15) rotate(var(--sr, 20deg)); }
+}
+
+/* tarjetas abiertas: icono pulsa y candado late */
+.unlock-card.unlocked .card-icon { animation: iconPulse 2.6s ease-in-out infinite; }
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 8px 18px rgba(0, 0, 0, 0.30);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 0 22px rgba(255, 214, 10, 0.45);
+  }
+}
+
+.unlock-card.unlocked .lock-badge { position: relative; }
+
+.unlock-card.unlocked .lock-badge::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 214, 10, 0.6);
+  animation: lockRing 2.4s ease-out infinite;
+}
+
+@keyframes lockRing {
+  0%        { transform: scale(0.7); opacity: 0.9; }
+  70%, 100% { transform: scale(1.75); opacity: 0; }
+}
+
+/* papeles internos del celular: nebulosas que respiran */
+.phone-screen > * { position: relative; z-index: 1; }
+
+.phone-lock::before,
+.phone-counter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  animation: nebBreathe 7s ease-in-out infinite;
+}
+
+.phone-lock::before {
+  background:
+    radial-gradient(62% 40% at 26% 10%, rgba(255, 190, 40, 0.16), transparent 60%),
+    radial-gradient(55% 42% at 82% 18%, rgba(255, 143, 171, 0.13), transparent 62%),
+    radial-gradient(85% 62% at 50% 105%, rgba(255, 180, 40, 0.12), transparent 62%);
+}
+
+.phone-counter::before {
+  background:
+    radial-gradient(60% 40% at 50% 12%, rgba(255, 200, 50, 0.18), transparent 62%),
+    radial-gradient(50% 36% at 16% 30%, rgba(255, 143, 171, 0.12), transparent 60%);
+}
+
+@keyframes nebBreathe {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+/* título del candado con resplandor que late */
+.phone-lock-title { animation: titleGlow 3.4s ease-in-out infinite; }
+
+@keyframes titleGlow {
+  0%, 100% { filter: drop-shadow(0 0 14px rgba(255, 214, 10, 0.5)); }
+  50%      { filter: drop-shadow(0 0 32px rgba(255, 214, 10, 0.95)); }
 }

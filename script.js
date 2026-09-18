@@ -1575,6 +1575,134 @@
   }
 
   /* ------------------------------------------------------------
+     LOVE FIELD — canvas de corazones dorados y destellos
+  ------------------------------------------------------------ */
+  function startLoveCanvas() {
+    const cv = $("#love-canvas");
+    if (!cv) return;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const PALETTE = ["255,214,10", "255,225,77", "255,143,171", "255,248,225"];
+    let W = 0, H = 0, raf = null, running = false;
+    const parts = [];
+
+    function resize() {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      cv.style.width = W + "px";
+      cv.style.height = H + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function make(init) {
+      return {
+        x: Math.random() * W,
+        y: init ? Math.random() * H : H + 24 + Math.random() * 60,
+        r: 1.2 + Math.random() * 2.4,
+        vy: 0.28 + Math.random() * 0.7,
+        sway: Math.random() * Math.PI * 2,
+        sw: 0.008 + Math.random() * 0.02,
+        phase: Math.random() * Math.PI * 2,
+        tw: 0.5 + Math.random() * 0.9,
+        c: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+        heart: Math.random() < 0.26,
+      };
+    }
+
+    function heartPath(x, y, s) {
+      ctx.moveTo(x, y + s * 0.35);
+      ctx.bezierCurveTo(x - s, y - s * 0.5, x - s * 0.5, y - s, x, y - s * 0.25);
+      ctx.bezierCurveTo(x + s * 0.5, y - s, x + s, y - s * 0.5, x, y + s * 0.35);
+    }
+
+    function drawFrame() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of parts) {
+        p.y -= p.vy;
+        p.sway += p.sw;
+        p.phase += 0.05;
+        const x = p.x + Math.sin(p.sway) * 14;
+        const y = p.y;
+        if (y > -30) {
+          const alpha = (0.30 + 0.28 * (0.5 + 0.5 * Math.sin(p.phase))) * p.tw;
+          const col = "rgba(" + p.c + "," + alpha.toFixed(3) + ")";
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = col;
+          ctx.beginPath();
+          if (p.heart) heartPath(x, y, p.r * 2.6);
+          else ctx.arc(x, y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = alpha * 0.35;
+          ctx.beginPath();
+          ctx.arc(x, y, p.r * 3.4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        if (y < -30) Object.assign(p, make(false));
+      }
+    }
+
+    resize();
+    for (let i = 0; i < 64; i++) parts.push(make(true));
+
+    if (reduced) {
+      drawFrame();
+      return;
+    }
+
+    function loop() {
+      if (!running) return;
+      drawFrame();
+      raf = requestAnimationFrame(loop);
+    }
+
+    running = true;
+    loop();
+    window.addEventListener("resize", () => { resize(); });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        running = false;
+        if (raf) cancelAnimationFrame(raf);
+      } else if (!running) {
+        running = true;
+        loop();
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------
+     DESTELLOS al tocar — chispitas doradas en cada gesto
+  ------------------------------------------------------------ */
+  function bindTapSparkle() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.addEventListener("pointerdown", (e) => {
+      spawnTapSpark(e.clientX, e.clientY);
+    }, { passive: true });
+  }
+
+  function spawnTapSpark(x, y) {
+    const glyphs = ["✨", "💛", "💫"];
+    const n = 3 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("span");
+      s.className = "tap-spark";
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = x + "px";
+      s.style.top = y + "px";
+      s.style.setProperty("--sx", (Math.random() * 96 - 48).toFixed(0) + "px");
+      s.style.setProperty("--sy", (-32 - Math.random() * 76).toFixed(0) + "px");
+      s.style.setProperty("--sr", (Math.random() * 60 - 30).toFixed(0) + "deg");
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 950);
+    }
+  }
+
+  /* ------------------------------------------------------------
      Boot
   ------------------------------------------------------------ */
   function boot() {
@@ -1591,6 +1719,8 @@
       seedStars($("#month-stars"), 30, "star-dot", ["#ffe14d", "#fff8e1", "#f5a800", "#ffd60a"]);
     } catch (e) { console.warn("mstars:", e); }
     try { seedMonthFloats(); } catch (e) { console.warn("mfloats:", e); }
+    try { startLoveCanvas(); } catch (e) { console.warn("lovefield:", e); }
+    try { bindTapSparkle(); } catch (e) { console.warn("tapspark:", e); }
     try { startShootingStars(); } catch (e) { console.warn("stars:", e); }
     try { startButterflies(); } catch (e) { console.warn("butterflies:", e); }
     try { setupMusic(); } catch (e) { console.warn("music:", e); }
