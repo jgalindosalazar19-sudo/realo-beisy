@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
 
@@ -74,6 +74,11 @@
       <div id="galaxy-photos"></div>
       <div class="galaxy-messages" id="galaxy-messages" aria-hidden="true"></div>
       <div class="galaxy-hint">Tocá un planeta para descubrir nuestra foto</div>
+
+      <div class="galaxy-final" id="galaxy-final" hidden>
+        <span class="galaxy-final-heart" aria-hidden="true">💛</span>
+        <p class="galaxy-final-line" id="galaxy-final-line"></p>
+      </div>
     </div>
 
     <p class="galaxy-intro" id="galaxy-intro"></p>
@@ -163,7 +168,7 @@
   <audio id="music-audio" loop preload="none"></audio>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="config.js?v=7"></script>
-  <script src="script.js?v=11"></script>
+  <script src="config.js?v=8"></script>
+  <script src="script.js?v=12"></script>
 </body>
 </html>

@@ -2034,8 +2034,92 @@ img { -webkit-user-drag: none; user-select: none; }
   .love-galaxy, .love-msg, .open-letter-btn, .love-ember, .love-beat,
   .love-aura, .love-heart-final, .love-core, .love-flash,
   .open-letter-btn::after, .love-final::before,
-  .letter-overlay, .letter-close, .letter-card, .envelope::after {
+  .letter-overlay, .letter-close, .letter-card, .envelope::after,
+  .galaxy-final, .galaxy-final-heart, .galaxy-final-line, .galaxy-rain, .photo-ring {
     animation: none !important;
     transition: none !important;
-  }
+}
+}
+
+/* ============================================================
+   GALAXIA — pase de amor: finale + lluvia de flores + aro
+   ============================================================ */
+.galaxy-final {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+.galaxy-final-heart {
+  font-size: clamp(84px, 30vw, 160px);
+  line-height: 1;
+  filter: drop-shadow(0 0 26px rgba(255, 214, 10, 0.9)) drop-shadow(0 0 60px rgba(255, 190, 40, 0.45));
+  animation: goldPulse 2.1s ease-in-out infinite;
+}
+
+@keyframes goldPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.09); }
+}
+
+.galaxy-final-line {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 7vw, 44px);
+  line-height: 1.25;
+  background: linear-gradient(90deg, #fff, #ffe14d 40%, #f5a800 72%, #ff8f00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 18px rgba(255, 180, 30, 0.95));
+  word-break: break-all;
+}
+
+/* lluvia de flores amarillas del finale */
+.galaxy-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.galaxy-rain-drop {
+  position: absolute;
+  top: -8%;
+  animation: rainFall var(--rd, 2.5s) ease-in forwards;
+  animation-delay: var(--rr, 0s);
+  will-change: transform, opacity;
+}
+
+@keyframes rainFall {
+  0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(115vh) translateX(var(--rx, 30px)) rotate(140deg); opacity: 0.9; }
+}
+
+/* aro dorado que nace cuando se abre una foto */
+.photo-ring {
+  position: fixed;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 214, 10, 0.95);
+  box-shadow: 0 0 18px rgba(255, 214, 10, 0.8), inset 0 0 12px rgba(255, 214, 10, 0.5);
+  z-index: 99;
+  pointer-events: none;
+  animation: ringOut 0.85s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+}
+
+@keyframes ringOut {
+  0%   { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(3.4); opacity: 0; }
 }

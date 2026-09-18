@@ -529,6 +529,45 @@
       setTimeout(() => ring.remove(), 1500);
     }
 
+    /* gran finale: corazón gigante + TE AMO + lluvia de flores */
+    function stageFinale() {
+      const final = $("#galaxy-final");
+      if (!final) return;
+      const reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      $("#galaxy-final-line").textContent = C.galaxy.finale || "";
+      final.hidden = false;
+      const heart = $(".galaxy-final-heart", final);
+      if (window.gsap && !reduced) {
+        window.gsap.fromTo(final, { opacity: 0 }, { opacity: 1, duration: 0.7, ease: "power2.out" });
+        if (heart) {
+          window.gsap.fromTo(heart, { scale: 0, rotate: -24 }, { scale: 1, rotate: 0, duration: 1, ease: "elastic.out(1.2, 0.5)" });
+        }
+      } else {
+        final.style.opacity = "1";
+      }
+      if (reduced) return;
+      try { explode($("#galaxy-heart") || heart, false); } catch (e) { console.warn("confetti:", e); }
+
+      /* lluvia de flores amarillas */
+      const stage = $("#galaxy-stage");
+      const rain = document.createElement("div");
+      rain.className = "galaxy-rain";
+      const glyphs = ["🌼", "💛", "✨", "🌻"];
+      for (let i = 0; i < 16; i++) {
+        const d = document.createElement("span");
+        d.className = "galaxy-rain-drop";
+        d.textContent = glyphs[i % glyphs.length];
+        d.style.left = (Math.random() * 96 + 2).toFixed(1) + "%";
+        d.style.setProperty("--rd", (2 + Math.random() * 1.6).toFixed(2) + "s");
+        d.style.setProperty("--rr", (Math.random() * 0.7).toFixed(2) + "s");
+        d.style.setProperty("--rx", ((Math.random() - 0.5) * 90).toFixed(0) + "px");
+        d.style.fontSize = (14 + Math.random() * 12).toFixed(1) + "px";
+        rain.appendChild(d);
+      }
+      stage.appendChild(rain);
+      setTimeout(() => rain.remove(), 4200);
+    }
+
     /* corazoncitos que brotan de la foto al abrirla */
     function sparkBurst(x, y, n) {
       const count = n || 8;
@@ -638,6 +677,14 @@
         setTimeout(() => inner.classList.remove("spin-burst"), 700);
         const r = inner.getBoundingClientRect();
         sparkBurst(r.left + r.width / 2, r.top + r.height / 2, 8);
+        if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+          const ring = document.createElement("i");
+          ring.className = "photo-ring";
+          ring.style.left = r.left + r.width / 2 + "px";
+          ring.style.top = r.top + r.height / 2 + "px";
+          document.body.appendChild(ring);
+          setTimeout(() => ring.remove(), 950);
+        }
         const stageRect = $("#galaxy-stage").getBoundingClientRect();
         SkyCanvas.burst(r.left + r.width / 2 - stageRect.left, r.top + r.height / 2 - stageRect.top, 18);
       }
@@ -662,6 +709,7 @@
       SkyCanvas.init();
       playEntrance();
       flashHeart();
+      setTimeout(stageFinale, 1550);
     }
 
     return { seed, enter, bindLightbox };

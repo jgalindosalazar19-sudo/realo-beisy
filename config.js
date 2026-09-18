@@ -24,8 +24,12 @@ window.PAGE_CONFIG = {
       { text: "Mi todo", photo: 5 },
       { text: "Estaré", photo: 6 },
       { text: "Contigo", photo: 7 },
-      { text: "Siempre", photo: 8 }
+      { text: "Siempre", photo: 8 },
+      { text: "Mi flor favorita eres tú", photo: 3 },
+      { text: "Sos mi lugar favorito", photo: 4 },
+      { text: "Mi princesa amarilla", photo: 8 }
     ],
+    finale: "TE AMO MI NIÑA 💛",
     photos: [
       { src: "photos/1.jpg?v=2", caption: "Estaré contigo, siempre" },
       { src: "photos/2.jpg?v=2", caption: "La mujer de mi vida" },
