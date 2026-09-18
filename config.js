@@ -17,14 +17,14 @@ window.PAGE_CONFIG = {
       "Dicen que regalar flores amarillas es un gesto de amor y de verano eterno. Tocá los mensajes de la galaxia y descubrí la foto de cada momento nuestro.",
     messages: [
       { text: "Te amo", photo: 0 },
-      { text: "Amor de mi vida", photo: 1 },
-      { text: "Eres preciosa", photo: 2 },
-      { text: "Siempre juntos", photo: 3 },
-      { text: "Mi love", photo: 4 },
-      { text: "Eres especial", photo: 5 },
-      { text: "Te amo mucho", photo: 6 },
-      { text: "Eres mi paz", photo: 7 },
-      { text: "Tu sonrisa brilla", photo: 8 }
+      { text: "Mi niña", photo: 1 },
+      { text: "Hermosa", photo: 2 },
+      { text: "Ojos hermosos", photo: 3 },
+      { text: "Mi vida", photo: 4 },
+      { text: "Mi todo", photo: 5 },
+      { text: "Estaré", photo: 6 },
+      { text: "Contigo", photo: 7 },
+      { text: "Siempre", photo: 8 }
     ],
     photos: [
       { src: "photos/1.jpg?v=2", caption: "El inicio de todo" },
