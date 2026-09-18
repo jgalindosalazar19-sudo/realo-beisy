@@ -332,6 +332,7 @@
       env.addEventListener("click", () => {
         if (env.classList.contains("open")) return;
         env.classList.add("open");
+        explode(env);
         setTimeout(() => {
           env.classList.add("done");
           paper.hidden = false;
@@ -492,6 +493,64 @@
   }
 
   /* ------------------------------------------------------------
+     Ambiente: corazones y brillitos flotando en toda la página
+  ------------------------------------------------------------ */
+  function buildAmbient() {
+    const host = $("#ambient");
+    if (!host || host.childElementCount) return;
+    const glyphs = ["💛", "🌼", "✨", "💫", "🤍", "⭐"];
+    for (let i = 0; i < 16; i++) {
+      const s = document.createElement("span");
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = (Math.random() * 100).toFixed(1) + "%";
+      s.style.setProperty("--sz", (10 + Math.random() * 12).toFixed(1) + "px");
+      s.style.setProperty("--af", (13 + Math.random() * 12).toFixed(1) + "s");
+      s.style.setProperty("--ad", (-Math.random() * 22).toFixed(1) + "s");
+      host.appendChild(s);
+    }
+  }
+
+  /* ------------------------------------------------------------
+     Estrellas fugaces en la galaxia
+  ------------------------------------------------------------ */
+  function startShootingStars() {
+    const host = $("#galaxy-shooting");
+    if (!host) return;
+    const spawn = () => {
+      const s = document.createElement("div");
+      s.className = "shooting-star";
+      s.style.left = (4 + Math.random() * 52).toFixed(1) + "%";
+      s.style.top = (Math.random() * 42).toFixed(1) + "%";
+      s.style.setProperty("--sd", (1.1 + Math.random() * 0.9).toFixed(2) + "s");
+      host.appendChild(s);
+      setTimeout(() => s.remove(), 2600);
+      setTimeout(spawn, 2600 + Math.random() * 3800);
+    };
+    setTimeout(spawn, 1600);
+  }
+
+  /* ------------------------------------------------------------
+     Música opcional (se activa desde config.js)
+  ------------------------------------------------------------ */
+  function setupMusic() {
+    const btn = $("#music-btn");
+    const audio = $("#music-audio");
+    const m = C.music || {};
+    if (!btn || !audio || !m.enabled || !m.src) return;
+    audio.src = m.src;
+    btn.hidden = false;
+    if (m.title) btn.setAttribute("aria-label", m.title);
+    btn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play().then(() => btn.classList.add("playing")).catch(() => {});
+      } else {
+        audio.pause();
+        btn.classList.remove("playing");
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------
      Boot
   ------------------------------------------------------------ */
   function boot() {
@@ -499,6 +558,9 @@
     renderCards();
     bindNav();
     Galaxy.bindLightbox();
+    buildAmbient();
+    startShootingStars();
+    setupMusic();
   }
 
   if (document.readyState === "loading") {

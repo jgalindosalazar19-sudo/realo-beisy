@@ -6,9 +6,14 @@
   <meta name="theme-color" content="#ffd60a" />
   <title>Para vos 💛</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💛</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
+
+  <div class="ambient" id="ambient" aria-hidden="true"></div>
 
   <!-- ============ LANDING / CANDADOS ============ -->
   <main id="view-landing" class="view active">
@@ -59,6 +64,7 @@
       <div class="galaxy-glow"></div>
       <div id="galaxy-stars"></div>
       <div id="galaxy-petals"></div>
+      <div id="galaxy-shooting" aria-hidden="true"></div>
       <div class="galaxy-heart" id="galaxy-heart" aria-hidden="true"></div>
       <div id="galaxy-photos"></div>
       <div class="galaxy-messages" id="galaxy-messages" aria-hidden="true"></div>
@@ -131,7 +137,10 @@
 
   <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
 
-  <script src="config.js?v=3"></script>
-  <script src="script.js?v=3"></script>
+  <button id="music-btn" class="music-btn" aria-label="Reproducir nuestra canción" hidden>♪</button>
+  <audio id="music-audio" loop preload="none"></audio>
+
+  <script src="config.js?v=4"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>

@@ -79,6 +79,13 @@ window.PAGE_CONFIG = {
       "Un mes es poquito comparado con todo lo que viene. Gracias por elegirme, por acompañarme, por ser mi hogar. Te amo."
   },
 
+  // Música de fondo opcional: poné enabled: true y la ruta del mp3 en src.
+  music: {
+    enabled: false,
+    src: "", // ej: "music/nuestra-cancion.mp3"
+    title: "Nuestra canción"
+  },
+
   // Bloquea pruebas cambiando esto a false (así ves todo el contenido sin esperar las fechas)
   forceUnlock: false
 };
