@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=21" />
+  <link rel="stylesheet" href="styles.css?v=22" />
 </head>
 <body>
 
@@ -211,8 +211,12 @@
         </div>
 
         <div class="month-actions">
-          <button class="month-action" id="month-letter-btn">Leer carta 💌</button>
-          <button class="month-action" id="month-memories-btn">Ver recuerdos 🩶</button>
+          <button class="month-action month-action--letter" id="month-letter-btn">
+            <span class="btn-envelope-sparkle" aria-hidden="true">✨</span>
+            <span class="btn-envelope-emoji" aria-hidden="true">💌</span>
+            <span class="btn-envelope-label">Leer carta</span>
+            <span class="btn-envelope-sparkle" aria-hidden="true">✨</span>
+          </button>
         </div>
       </div>
     </div>
@@ -220,12 +224,25 @@
     <!-- Carta de nuestro mes -->
     <div class="month-overlay" id="month-letter-overlay" hidden>
       <button class="month-close" id="month-letter-close" aria-label="Cerrar carta">✕</button>
-      <div class="month-letter">
-        <span class="month-letter-emoji" aria-hidden="true">💌</span>
+      <article class="month-letter" id="month-letter-card">
+        <div class="letter-wax-seal" aria-hidden="true">
+          <span class="wax-heart">🩶</span>
+        </div>
+        <div class="letter-header-kicker" aria-hidden="true">✦ SOLO PARA VOS ✦</div>
         <h3 class="month-letter-title" id="month-letter-title"></h3>
+        <div class="letter-divider" aria-hidden="true">
+          <span class="ld-line"></span>
+          <span class="ld-gem">✧ 🩶 ✧</span>
+          <span class="ld-line"></span>
+        </div>
         <div class="month-letter-body" id="month-letter-body"></div>
         <p class="month-letter-sign" id="month-letter-sign"></p>
-      </div>
+        <div class="letter-footer-action">
+          <button class="letter-keep-btn" id="letter-keep-btn">
+            <span>Guardar en mi corazón</span> <span class="keep-heart">🩶</span>
+          </button>
+        </div>
+      </article>
     </div>
 
     <!-- Recuerdos de nuestro mes -->
@@ -249,6 +266,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" defer></script>
   <script src="config.js?v=11"></script>
-  <script src="script.js?v=20"></script>
+  <script src="script.js?v=21"></script>
 </body>
 </html>

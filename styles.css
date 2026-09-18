@@ -2715,10 +2715,10 @@ img { -webkit-user-drag: none; user-select: none; }
 .month-actions {
   width: 100%;
   margin-top: auto;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  align-items: center;
 }
 
 .month-action {
@@ -2733,7 +2733,76 @@ img { -webkit-user-drag: none; user-select: none; }
   transition: transform 0.08s ease, background 0.15s ease;
 }
 
-.month-action:active { transform: scale(0.97); background: rgba(255, 214, 10, 0.2); }
+.month-action--letter {
+  width: auto;
+  min-width: 220px;
+  max-width: 90%;
+  padding: 16px 32px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 214, 10, 0.75);
+  background: linear-gradient(135deg, rgba(255, 214, 10, 0.22), rgba(255, 175, 40, 0.12));
+  color: #fff6d8;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 0 24px rgba(255, 214, 10, 0.35), inset 0 0 14px rgba(255, 214, 10, 0.15);
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, background 0.25s ease;
+  animation: letterBtnPulse 3.2s ease-in-out infinite;
+  cursor: pointer;
+}
+
+@keyframes letterBtnPulse {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(255, 214, 10, 0.3), inset 0 0 10px rgba(255, 214, 10, 0.1);
+    border-color: rgba(255, 214, 10, 0.65);
+  }
+  50% {
+    box-shadow: 0 0 34px rgba(255, 214, 10, 0.65), inset 0 0 18px rgba(255, 214, 10, 0.25);
+    border-color: rgba(255, 235, 120, 0.95);
+  }
+}
+
+.month-action--letter:hover {
+  background: linear-gradient(135deg, rgba(255, 214, 10, 0.32), rgba(255, 175, 40, 0.22));
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 36px rgba(255, 214, 10, 0.7);
+}
+
+.month-action--letter:active {
+  transform: scale(0.96);
+  background: rgba(255, 214, 10, 0.3);
+}
+
+.btn-envelope-emoji {
+  font-size: 24px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.55));
+  transition: transform 0.2s ease;
+}
+.month-action--letter:hover .btn-envelope-emoji {
+  transform: scale(1.22) rotate(-8deg);
+}
+
+.btn-envelope-label {
+  font-size: 17px;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.btn-envelope-sparkle {
+  font-size: 14px;
+  opacity: 0.85;
+  color: #ffe14d;
+  animation: twinkleSparkle 2s ease-in-out infinite;
+}
+@keyframes twinkleSparkle {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
 
 /* ---- overlays del mes: carta + recuerdos ---- */
 .month-overlay {
@@ -2744,9 +2813,9 @@ img { -webkit-user-drag: none; user-select: none; }
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(10, 7, 18, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(10, 7, 18, 0.76);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   overflow-y: auto;
 }
 .month-overlay[hidden] { display: none !important; }
@@ -2755,7 +2824,7 @@ img { -webkit-user-drag: none; user-select: none; }
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(60% 45% at 50% 0%, rgba(255, 214, 10, 0.16), transparent 65%);
+  background: radial-gradient(65% 50% at 50% 0%, rgba(255, 214, 10, 0.18), transparent 70%);
 }
 
 .month-close {
@@ -2774,52 +2843,151 @@ img { -webkit-user-drag: none; user-select: none; }
 }
 .month-close:active { transform: scale(0.92); background: rgba(255, 214, 10, 0.22); }
 
-/* la carta */
+/* la carta — pergamino de amor */
 .month-letter {
   position: relative;
   z-index: 1;
-  width: min(92vw, 400px);
-  max-height: 84vh;
+  width: min(92vw, 440px);
+  max-height: 86vh;
   overflow-y: auto;
-  padding: 26px 24px 30px;
-  border-radius: 26px;
-  background: linear-gradient(165deg, #fff2cf, #ffdf9e 40%, #ffd9a0);
-  color: #4a3208;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55), 0 0 44px rgba(255, 214, 10, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 30px 26px 28px;
+  border-radius: 28px;
+  background: linear-gradient(170deg, #fffcf5 0%, #fff6e2 40%, #ffeed0 100%);
+  color: #432e0e;
+  box-shadow:
+    0 35px 80px rgba(0, 0, 0, 0.65),
+    0 0 60px rgba(255, 214, 10, 0.32),
+    inset 0 0 40px rgba(230, 180, 70, 0.12);
+  border: 1.5px solid rgba(255, 245, 210, 0.95);
+  outline: 1px solid rgba(195, 145, 55, 0.38);
+  outline-offset: -8px;
 }
 
-.month-letter-emoji {
-  display: block;
+/* Sello de lacre real con brillo y relieve */
+.letter-wax-seal {
+  width: 52px;
+  height: 52px;
+  margin: -10px auto 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e8ba40, #b58210 60%, #7d5705);
+  box-shadow:
+    0 6px 16px rgba(110, 75, 10, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.35);
+  border: 2px dashed rgba(255, 235, 150, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wax-heart {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+.letter-header-kicker {
   text-align: center;
-  font-size: 38px;
-  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: 700;
+  color: #9c6e18;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  opacity: 0.85;
 }
 
 .month-letter-title {
   font-family: var(--font-display);
-  font-size: clamp(24px, 6.4vw, 30px);
+  font-size: clamp(26px, 7vw, 34px);
   font-weight: 700;
   text-align: center;
-  color: #8a5a00;
-  margin-bottom: 14px;
+  color: #784c00;
+  margin: 4px 0 10px;
+  line-height: 1.25;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+.letter-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 10px 0 16px;
+}
+.ld-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(180, 130, 40, 0.45), transparent);
+}
+.ld-gem {
+  font-size: 13px;
+  color: #9c6e18;
+  letter-spacing: 2px;
 }
 
 .month-letter-body p {
-  margin: 12px 0;
-  font-size: 15.5px;
-  line-height: 1.65;
-  color: #5a400e;
+  margin: 14px 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #4a3412;
   text-align: left;
+  letter-spacing: 0.2px;
+}
+.month-letter-body p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 38px;
+  float: left;
+  line-height: 0.85;
+  margin: 4px 8px 0 0;
+  color: #8c5b05;
+  font-weight: 700;
 }
 
 .month-letter-sign {
-  margin-top: 18px;
+  margin: 22px 0 16px;
   text-align: right;
   font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 600;
-  color: #8a5a00;
+  font-size: 22px;
+  font-weight: 700;
+  color: #784c00;
+  line-height: 1.3;
+}
+
+/* Botón interactivo al final de la carta */
+.letter-footer-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(180, 130, 40, 0.35);
+}
+
+.letter-keep-btn {
+  padding: 13px 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(150, 100, 20, 0.45);
+  background: linear-gradient(135deg, #b8860b, #996515);
+  color: #fffcf0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  box-shadow: 0 6px 18px rgba(130, 90, 15, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.letter-keep-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(130, 90, 15, 0.45);
+  background: linear-gradient(135deg, #c79212, #a8721c);
+}
+.letter-keep-btn:active {
+  transform: scale(0.96);
+}
+.keep-heart {
+  font-size: 17px;
 }
 
 /* recuerdos */

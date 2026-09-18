@@ -1525,7 +1525,12 @@
       actionsBound = true;
       const l = $("#month-letter-btn");
       const m = $("#month-memories-btn");
-      if (l) l.addEventListener("click", () => openOverlay("#month-letter-overlay"));
+      if (l) {
+        l.addEventListener("click", () => {
+          try { explode(l, false); } catch (e) {}
+          openOverlay("#month-letter-overlay");
+        });
+      }
       if (m) m.addEventListener("click", () => openOverlay("#month-memories-overlay"));
       const lc = $("#month-letter-close");
       const mc = $("#month-memories-close");
@@ -1533,6 +1538,20 @@
       if (mc) mc.addEventListener("click", () => closeOverlay("#month-memories-overlay"));
       const fb = $("#month-forever-btn");
       if (fb) fb.addEventListener("click", forever);
+      const kb = $("#letter-keep-btn");
+      if (kb) {
+        kb.addEventListener("click", () => {
+          try { explode(kb, false); } catch (e) {}
+          const msg = document.createElement("div");
+          msg.className = "month-forever-msg";
+          msg.textContent = "Guardada para siempre en nuestro corazón 🩶";
+          document.body.appendChild(msg);
+          setTimeout(() => {
+            closeOverlay("#month-letter-overlay");
+            msg.remove();
+          }, 1800);
+        });
+      }
     }
 
     statusClock();
