@@ -31,7 +31,14 @@
   function isBefore(dateA, dateB) { return dateA < dateB; }
 
   function detectSection() {
-    if (C.forceUnlock) return true;
+    const transient =
+      new URLSearchParams(window.location.search).get("vista") === "nuestrasfechas";
+    if (transient || C.forceUnlock) {
+      unlockedStore.galaxy = true;
+      unlockedStore.letter = true;
+      unlockedStore.timeline = true;
+      return;
+    }
     const now = new Date();
     ["galaxy", "letter", "timeline"].forEach((k) => {
       const target = C.unlockDates[k];
