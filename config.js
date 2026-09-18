@@ -82,6 +82,21 @@ window.PAGE_CONFIG = {
     counterTitle: "Llevamos juntos...",
     celebrationTitle: "¿Qué va a ser? 💛",
     celebrationCTAs: ["¿Qué va a ser? 👇", "Quedate un mes más", "Quedate otro mes más", "Quedate para siempre 💛"],
+    letter: {
+      title: "Para mi niña, un mes de nosotros 💌",
+      body: [
+        "Mi amor, hoy hace un mes que el universo alineó sus galaxias para cruzarnos y yo, sin darme cuenta, empecé el capítulo más hermoso de mi vida.",
+        "Un mes es poquito comparado con todo lo que viene, pero a mí me alcanza para saber que sos mi lugar, mi calma, mi persona favorita en todo el mundo.",
+        "Gracias por cada buenos días, por cada risa, por cada te amo. Gracias por dejarme amarte y por amarme así de lindo.",
+        "Feliz mes, mi niña. Quiero cien más, mil más, toda la vida."
+      ],
+      signature: "— Tu persona, con todo mi amor 💛"
+    },
+    memories: {
+      title: "Nuestros recuerdos 💛",
+      subtitle: "un poquito de lo que ya vivimos",
+      celebrationCTA: "Quedate para siempre 💛"
+    },
     milestones: [
       { days: 1, title: "Día 1 — El comienzo", text: "El día que dijimos \"sí\" y el universo sonrió." },
       { days: 7, title: "Día 7 — Nuestra primera semana", text: "Siete días llenos de mensajes, risas y \"buenos días\"." },

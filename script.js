@@ -1436,11 +1436,103 @@
       buildKeypad();
       clearBuffer();
       locked = true;
+      fillLetter();
+      buildMemories();
+      bindMonthActions();
       gsap.set([$("#phone-lock"), $("#phone-counter")], { opacity: 1, scale: 1, rotateX: 0 });
       $("#phone-lock").hidden = false;
       $("#phone-counter").hidden = true;
       $("#phone-lock").style.pointerEvents = "";
       if (intv) clearInterval(intv);
+    }
+
+    /* ---------- carta de nuestro mes ---------- */
+    function fillLetter() {
+      const L = C.timeline.letter;
+      if (!L) return;
+      const t = $("#month-letter-title");
+      const b = $("#month-letter-body");
+      const s = $("#month-letter-sign");
+      if (t) t.textContent = L.title;
+      if (b) b.innerHTML = L.body.map((p) => `<p>${p}</p>`).join("");
+      if (s) s.textContent = L.signature || "";
+    }
+
+    /* ---------- recuerdos de nuestro mes ---------- */
+    function memoryDate(days) {
+      const off = days - 1;
+      const d = new Date(ANN.getFullYear(), ANN.getMonth(), ANN.getDate() + off, ANN.getHours(), ANN.getMinutes());
+      return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0") + "/" + d.getFullYear();
+    }
+
+    function buildMemories() {
+      const M = C.timeline.memories;
+      const list = $("#memories-list");
+      if (!M || !list || list.childElementCount) return;
+      const t = $("#month-memories-title");
+      const sub = $("#month-memories-sub");
+      const ep = $("#month-epilogue");
+      if (t) t.textContent = M.title;
+      if (sub) sub.textContent = M.subtitle;
+      C.timeline.milestones.forEach((m) => {
+        const card = document.createElement("div");
+        card.className = "memory-card";
+        card.innerHTML =
+          `<span class="memory-card-title">${m.title}</span>` +
+          `<span class="memory-card-text">${m.text}</span>` +
+          `<span class="memory-card-date">${memoryDate(m.days)}</span>`;
+        list.appendChild(card);
+      });
+      if (ep) ep.textContent = C.timeline.epilogue;
+      const f = $("#month-forever-btn");
+      if (f) f.textContent = M.celebrationCTA || "Quedate para siempre 💛";
+    }
+
+    /* ---------- apertura/cierre de overlays + acciones ---------- */
+    function openOverlay(id) {
+      const ov = $(id);
+      if (!ov) return;
+      ov.hidden = false;
+      if (REDUCED()) return;
+      try {
+        const card = ov.querySelector(".month-letter, .month-memories");
+        if (card) {
+          gsap.fromTo(card, { opacity: 0, scale: 0.85, y: 26 }, { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "back.out(1.6)" });
+        }
+      } catch (e) { /* noop */ }
+    }
+
+    function closeOverlay(id) {
+      const ov = $(id);
+      if (ov) ov.hidden = true;
+    }
+
+    function forever() {
+      const btn = $("#month-forever-btn");
+      if (btn) {
+        try { explode(btn, true); } catch (e) { console.warn("forever:", e); }
+      }
+      const msg = document.createElement("div");
+      msg.className = "month-forever-msg";
+      msg.textContent = "Y no es un adiós, es el empezar de siempre 💛";
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 3200);
+    }
+
+    let actionsBound = false;
+    function bindMonthActions() {
+      if (actionsBound) return;
+      actionsBound = true;
+      const l = $("#month-letter-btn");
+      const m = $("#month-memories-btn");
+      if (l) l.addEventListener("click", () => openOverlay("#month-letter-overlay"));
+      if (m) m.addEventListener("click", () => openOverlay("#month-memories-overlay"));
+      const lc = $("#month-letter-close");
+      const mc = $("#month-memories-close");
+      if (lc) lc.addEventListener("click", () => closeOverlay("#month-letter-overlay"));
+      if (mc) mc.addEventListener("click", () => closeOverlay("#month-memories-overlay"));
+      const fb = $("#month-forever-btn");
+      if (fb) fb.addEventListener("click", forever);
     }
 
     statusClock();

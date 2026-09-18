@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=18" />
+  <link rel="stylesheet" href="styles.css?v=19" />
 </head>
 <body>
 
@@ -216,6 +216,29 @@
         </div>
       </div>
     </div>
+
+    <!-- Carta de nuestro mes -->
+    <div class="month-overlay" id="month-letter-overlay" hidden>
+      <button class="month-close" id="month-letter-close" aria-label="Cerrar carta">✕</button>
+      <div class="month-letter">
+        <span class="month-letter-emoji" aria-hidden="true">💌</span>
+        <h3 class="month-letter-title" id="month-letter-title"></h3>
+        <div class="month-letter-body" id="month-letter-body"></div>
+        <p class="month-letter-sign" id="month-letter-sign"></p>
+      </div>
+    </div>
+
+    <!-- Recuerdos de nuestro mes -->
+    <div class="month-overlay" id="month-memories-overlay" hidden>
+      <button class="month-close" id="month-memories-close" aria-label="Cerrar recuerdos">✕</button>
+      <div class="month-memories">
+        <h3 class="month-memories-title" id="month-memories-title"></h3>
+        <p class="month-memories-sub" id="month-memories-sub"></p>
+        <div class="memories-list" id="memories-list"></div>
+        <p class="month-epilogue" id="month-epilogue"></p>
+        <button class="month-forever" id="month-forever-btn">Quedate para siempre 💛</button>
+      </div>
+    </div>
   </section>
 
   <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
@@ -226,6 +249,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js" defer></script>
   <script src="config.js?v=9"></script>
-  <script src="script.js?v=17"></script>
+  <script src="script.js?v=18"></script>
 </body>
 </html>
