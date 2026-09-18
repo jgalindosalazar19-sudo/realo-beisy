@@ -14,7 +14,7 @@ window.PAGE_CONFIG = {
     title: "Flores Amarillas",
     subtitle: "19 de septiembre · Día de las Flores Amarillas",
     intro:
-      "Dicen que regalar flores amarillas es un gesto de amor y de verano eterno. Tocá los mensajes de la galaxia y descubrí la foto de cada momento nuestro.",
+      "Dicen que regalar flores amarillas es un gesto de amor y si, lo es por eso hice esto para ti mi niña.",
     messages: [
       { text: "Te amo", photo: 0 },
       { text: "Mi niña", photo: 1 },
@@ -27,16 +27,16 @@ window.PAGE_CONFIG = {
       { text: "Siempre", photo: 8 }
     ],
     photos: [
-      { src: "photos/1.jpg?v=2", caption: "El inicio de todo" },
-      { src: "photos/2.jpg?v=2", caption: "Nuestra primera risa compartida" },
-      { src: "photos/3.jpg?v=2", caption: "Ese día que no quisimos que terminara" },
+      { src: "photos/1.jpg?v=2", caption: "Estaré contigo, siempre" },
+      { src: "photos/2.jpg?v=2", caption: "La mujer de mi vida" },
+      { src: "photos/3.jpg?v=2", caption: "Gracias por quedarte conmigo" },
       { src: "photos/4.jpg?v=2", caption: "Tus flores amarillas, mi persona favorita" },
-      { src: "photos/5.jpg?v=2", caption: "Momentos simples, corazones grandes" },
+      { src: "photos/5.jpg?v=2", caption: "Eres y serás tu, siempre" },
       { src: "photos/6.jpg?v=2", caption: "De tu mano, todo es mejor" },
-      { src: "photos/7.jpg?v=2", caption: "Nuestro mundo en una mirada" },
-      { src: "photos/8.jpg?v=2", caption: "El verano que se quedó conmigo" },
-      { src: "photos/9.jpg?v=2", caption: "Cada foto, un latido" },
-      { src: "photos/10.jpg?v=2", caption: "Y lo mejor está por venir" }
+      { src: "photos/7.jpg?v=2", caption: "tu mirada es mi mundo" },
+      { src: "photos/8.jpg?v=2", caption: "Te amo mi niña" },
+      { src: "photos/9.jpg?v=2", caption: "mi princesa hermosa" },
+      { src: "photos/10.jpg?v=2", caption: "mi princesa hermosa" }
     ]
   },
 

@@ -63,12 +63,17 @@
     <div class="galaxy-stage" id="galaxy-stage">
       <div class="galaxy-glow"></div>
       <div id="galaxy-stars"></div>
+      <div id="galaxy-rays" aria-hidden="true"></div>
+      <canvas id="galaxy-canvas" aria-hidden="true"></canvas>
+      <div id="galaxy-flower" aria-hidden="true"></div>
+      <div id="galaxy-dust" aria-hidden="true"></div>
+      <div id="galaxy-skyfx" aria-hidden="true"></div>
       <div id="galaxy-petals"></div>
       <div id="galaxy-shooting" aria-hidden="true"></div>
       <div class="galaxy-heart" id="galaxy-heart" aria-hidden="true"></div>
       <div id="galaxy-photos"></div>
       <div class="galaxy-messages" id="galaxy-messages" aria-hidden="true"></div>
-      <div class="galaxy-hint">Tocá un planeta para ver la foto</div>
+      <div class="galaxy-hint">Tocá un planeta para descubrir nuestra foto</div>
     </div>
 
     <p class="galaxy-intro" id="galaxy-intro"></p>
@@ -140,7 +145,8 @@
   <button id="music-btn" class="music-btn" aria-label="Reproducir nuestra canción" hidden>♪</button>
   <audio id="music-audio" loop preload="none"></audio>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="config.js?v=4"></script>
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>

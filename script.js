@@ -100,7 +100,7 @@
       if (!card || !card.classList.contains("unlocked")) return;
       showView(card.dataset.view);
       const kv = card.dataset.view;
-      if (kv === "galaxy") Galaxy.seed();
+      if (kv === "galaxy") Galaxy.enter();
       if (kv === "letter") Later.ensureIntro();
       if (kv === "timeline") Counter.onEnter();
     });
@@ -115,6 +115,7 @@
   ------------------------------------------------------------ */
   const Galaxy = (() => {
     let photoEls = [];
+    let magicBound = false;
 
     function makePhoto(p, idx) {
       const limit = Math.min(window.innerWidth || 390, 520);
@@ -145,7 +146,10 @@
       };
       img.src = p.src;
       d.appendChild(img);
-      inner.appendChild(d);
+      const gsapWrap = document.createElement("div");
+      gsapWrap.className = "gph-gsap";
+      gsapWrap.appendChild(d);
+      inner.appendChild(gsapWrap);
       gph.appendChild(inner);
       gph.__photo = d;
       return gph;
@@ -170,15 +174,17 @@
     function buildPetals() {
       const host = $("#galaxy-petals");
       if (host.childElementCount) return;
-      const emojis = ["🌼", "✨", "💛"];
-      for (let i = 0; i < 9; i++) {
+      const emojis = ["🌼", "✨", "💛", "🌻"];
+      for (let i = 0; i < 16; i++) {
         const p = document.createElement("div");
-        p.className = "galaxy-petal";
+        p.className = "galaxy-petal" + (i % 5 === 0 ? " is-front" : "");
         p.textContent = emojis[i % emojis.length];
         p.style.cssText =
-          `left:${(3 + Math.random() * 92).toFixed(1)}%;` +
-          `--pd:${(7 + Math.random() * 6).toFixed(1)}s;` +
-          `animation-delay:${(-Math.random() * 9).toFixed(1)}s;`;
+          `left:${(2 + Math.random() * 94).toFixed(1)}%;` +
+          `font-size:${(13 + Math.random() * 12).toFixed(1)}px;` +
+          `--pd:${(7 + Math.random() * 7).toFixed(1)}s;` +
+          `--sx:${((Math.random() - 0.5) * 54).toFixed(1)}px;` +
+          `animation-delay:${(-Math.random() * 14).toFixed(1)}s;`;
         host.appendChild(p);
       }
     }
@@ -203,6 +209,341 @@
       }
     }
 
+    /* flor gigante central: capas de pétalos girando + mazorca dorada */
+    function buildFlower() {
+      const host = $("#galaxy-flower");
+      if (!host || host.childElementCount) return;
+      const limit = Math.min(window.innerWidth || 390, 520);
+      const f = 1.15;
+      const core = Math.round((limit * 0.075 + 12) * f);
+
+      const layers = [
+        { w: Math.round(limit * 0.20 * f), h: Math.round(limit * 0.30 * f), n: 12, r: core + 4, cls: "fl-outer", spin: "fl-cw" },
+        { w: Math.round(limit * 0.13 * f), h: Math.round(limit * 0.20 * f), n: 10, r: core - 4, cls: "fl-inner", spin: "fl-ccw" }
+      ];
+
+      layers.forEach((ly) => {
+        const wrap = document.createElement("div");
+        wrap.className = "fl-layer " + ly.spin;
+        for (let i = 0; i < ly.n; i++) {
+          const p = document.createElement("div");
+          p.className = "fl-petal " + ly.cls;
+          p.style.cssText =
+            `width:${ly.w}px;height:${ly.h}px;margin:-${ly.h}px 0 0 -${(ly.w / 2).toFixed(0)}px;` +
+            `--pa:${((i * 360) / ly.n).toFixed(1)}deg;--pr:${ly.r}px;` +
+            `animation-delay:${(i * 0.05).toFixed(2)}s;`;
+          wrap.appendChild(p);
+        }
+        host.appendChild(wrap);
+      });
+
+      const c = document.createElement("div");
+      c.className = "fl-core";
+      const cs = core * 2;
+      c.style.cssText = `width:${cs}px;height:${cs}px;margin:${-cs / 2}px 0 0 ${-cs / 2}px;`;
+      host.appendChild(c);
+
+      const halo = document.createElement("div");
+      halo.className = "fl-layer fl-halo";
+      for (let i = 0; i < 8; i++) {
+        const hp = document.createElement("div");
+        hp.className = "fl-halo-p";
+        hp.style.setProperty("--pa", (i * 45) + "deg");
+        hp.style.transform = `rotate(${i * 45}deg)`;
+        halo.appendChild(hp);
+      }
+      host.insertBefore(halo, host.firstChild);
+    }
+
+    /* polvo dorado flotando */
+    function buildDust() {
+      const host = $("#galaxy-dust");
+      if (!host || host.childElementCount) return;
+      for (let i = 0; i < 24; i++) {
+        const d = document.createElement("div");
+        d.className = "dust";
+        const s = 3 + Math.random() * 5;
+        d.style.cssText =
+          `left:${(Math.random() * 100).toFixed(1)}%;top:${(10 + Math.random() * 80).toFixed(1)}%;` +
+          `width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;` +
+          `--df:${(11 + Math.random() * 9).toFixed(1)}s;--dd:${(-Math.random() * 16).toFixed(1)}s;` +
+          `--dx:${((Math.random() - 0.5) * 70).toFixed(1)}px;--do:${(0.35 + Math.random() * 0.45).toFixed(2)};`;
+        host.appendChild(d);
+      }
+    }
+
+    /* anillos orbitales alrededor del disco de fotos */
+    function buildOrbitRings(disc) {
+      const limit = Math.min(window.innerWidth || 390, 520);
+      const base = Math.round(limit * 0.34);
+      [0.55, 0.95].forEach((k) => {
+        const ring = document.createElement("div");
+        const r = Math.round(base * k);
+        ring.className = "orbit-ring";
+        ring.style.cssText = `width:${r * 2}px;height:${r * 2}px;`;
+        disc.appendChild(ring);
+      });
+    }
+
+    /* cielo: estelas de luciérnaga + destellos grandes */
+    function buildSkyfx() {
+      const host = $("#galaxy-skyfx");
+      if (!host || host.childElementCount) return;
+      for (let i = 0; i < 4; i++) {
+        const st = document.createElement("div");
+        st.className = "streak";
+        st.style.cssText =
+          `left:${(6 + Math.random() * 88).toFixed(1)}%;bottom:${(-10 + Math.random() * 18).toFixed(1)}%;` +
+          `--st:${(9 + Math.random() * 7).toFixed(1)}s;--sd:${(-Math.random() * 14).toFixed(1)}s;`;
+        host.appendChild(st);
+      }
+      const bolts = ["✦", "✧", "❀", "💛"];
+      for (let i = 0; i < 6; i++) {
+        const b = document.createElement("span");
+        b.className = "big-sparkle";
+        b.textContent = bolts[i % bolts.length];
+        b.style.cssText =
+          `left:${(8 + Math.random() * 84).toFixed(1)}%;top:${(6 + Math.random() * 80).toFixed(1)}%;` +
+          `font-size:${(11 + Math.random() * 9).toFixed(1)}px;` +
+          `--sz:${(3 + Math.random() * 3.4).toFixed(1)}s;--sdd:${(-Math.random() * 6).toFixed(1)}s;`;
+        host.appendChild(b);
+      }
+    }
+
+    /* canvas: constelaciones de polvo dorado conectado */
+    const SkyCanvas = (() => {
+      let canvas = null,
+        ctx = null,
+        running = false,
+        parts = [],
+        raf = 0;
+
+      function W() { return canvas ? canvas.clientWidth : 0; }
+      function H() { return canvas ? canvas.clientHeight : 0; }
+
+      function makePart() {
+        const w = W() || 390,
+          h = H() || 300;
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.22,
+          vy: (Math.random() - 0.5) * 0.22,
+          r: 0.6 + Math.random() * 1.6,
+          a: 0.35 + Math.random() * 0.6,
+          tw: Math.random() * Math.PI * 2
+        };
+      }
+
+      function init() {
+        if (running) return;
+        canvas = $("#galaxy-canvas");
+        if (!canvas) return;
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        running = true;
+        const stage = $("#galaxy-stage");
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const resize = () => {
+          const r = stage.getBoundingClientRect();
+          canvas.width = Math.max(1, Math.round(r.width * dpr));
+          canvas.height = Math.max(1, Math.round(r.height * dpr));
+          canvas.style.width = r.width + "px";
+          canvas.style.height = r.height + "px";
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+        resize();
+        window.addEventListener("resize", resize, { passive: true });
+        for (let i = 0; i < 66; i++) parts.push(makePart());
+        raf = requestAnimationFrame(loop);
+      }
+
+      function burst(x, y, n) {
+        if (!running || !ctx) return;
+        const count = n || 12;
+        for (let i = 0; i < count; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const sp = 0.5 + Math.random() * 1.6;
+          parts.push({
+            x, y,
+            vx: Math.cos(ang) * sp,
+            vy: Math.sin(ang) * sp,
+            r: 1 + Math.random() * 2.2,
+            a: 0.9,
+            tw: 0,
+            burst: true,
+            life: 1
+          });
+        }
+        if (parts.length > 240) parts = parts.filter((p) => !p.burst || p.life > 0);
+      }
+
+      function loop() {
+        const w = W(),
+          h = H();
+        if (w > 0 && h > 0) {
+          ctx.clearRect(0, 0, w, h);
+
+          ctx.lineWidth = 0.6;
+          for (let i = 0; i < parts.length; i++) {
+            for (let j = i + 1; j < parts.length; j++) {
+              const p = parts[i],
+                q = parts[j];
+              const dx = p.x - q.x,
+                dy = p.y - q.y;
+              const d2 = dx * dx + dy * dy;
+              if (d2 < 130 * 130) {
+                const alpha = (1 - Math.sqrt(d2) / 130) * 0.16;
+                ctx.strokeStyle = "rgba(255,225,90," + alpha.toFixed(3) + ")";
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.stroke();
+              }
+            }
+          }
+
+          for (let i = parts.length - 1; i >= 0; i--) {
+            const p = parts[i];
+            p.tw += 0.05;
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.burst) {
+              p.life -= 0.03;
+              p.vx *= 0.96;
+              p.vy *= 0.96;
+              if (p.life <= 0) { parts.splice(i, 1); continue; }
+            } else {
+              if (p.x < -10) p.x = w + 10;
+              if (p.x > w + 10) p.x = -10;
+              if (p.y < -10) p.y = h + 10;
+              if (p.y > h + 10) p.y = -10;
+            }
+            const alpha = p.a * (0.55 + 0.45 * Math.sin(p.tw));
+            ctx.fillStyle = "rgba(255,238,140," + alpha.toFixed(3) + ")";
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        raf = requestAnimationFrame(loop);
+      }
+
+      return { init, burst };
+    })();
+
+    /* tilteo 3D sutil de las fotos */
+    function bindPhotoTilt(ph) {
+      let armed = false;
+      ph.addEventListener("pointerenter", () => {
+        armed = true;
+        ph.classList.add("ph-tilt");
+        ph.classList.remove("ph-flat");
+      });
+      ph.addEventListener("pointermove", (e) => {
+        if (!armed) return;
+        const r = ph.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        const px = (e.clientX - r.left) / r.width - 0.5;
+        const py = (e.clientY - r.top) / r.height - 0.5;
+        ph.style.transform =
+          "perspective(320px) rotateX(" + (-py * 14).toFixed(1) + "deg) rotateY(" + (px * 14).toFixed(1) + "deg)";
+      });
+      ph.addEventListener("pointerleave", () => {
+        armed = false;
+        ph.style.transform = "";
+        ph.classList.add("ph-flat");
+        ph.classList.remove("ph-tilt");
+      });
+    }
+
+    /* coreografía de entrada con GSAP */
+    function playEntrance() {
+      if (!window.gsap || photoEls.length === 0) return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const g = window.gsap;
+      const stage = $("#galaxy-stage");
+      const targets = {
+        title: $("#galaxy-title"),
+        sub: $("#galaxy-subtitle"),
+        photos: Array.from(document.querySelectorAll("#galaxy-photos .gph-gsap")),
+        msgs: Array.from(document.querySelectorAll("#galaxy-messages .msg-inner")),
+        hint: $("#galaxy-hint"),
+        sparkles: Array.from(document.querySelectorAll("#galaxy-skyfx .big-sparkle"))
+      };
+      const tl = g.timeline();
+      tl.fromTo(targets.title, { y: 26, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 0.05)
+        .fromTo(targets.sub, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.2)
+        .fromTo(targets.photos, { scale: 0, opacity: 0, y: 28 }, { scale: 1, opacity: 1, y: 0, duration: 0.8, stagger: 0.07, ease: "elastic.out(1, 0.55)" }, 0.3)
+        .fromTo(targets.msgs, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, stagger: 0.06, ease: "back.out(2.2)" }, 0.55)
+        .fromTo(targets.hint, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power1.out" }, 0.7)
+        .fromTo(targets.sparkles, { opacity: 0 }, { opacity: 0.9, duration: 0.4, stagger: 0.05 }, 0.8);
+      tl.call(() => {
+        const ring = document.createElement("div");
+        ring.className = "stage-flash";
+        stage.appendChild(ring);
+        setTimeout(() => ring.remove(), 1500);
+      }, [], 0.95);
+    }
+
+    /* magia al tocar: onda + chispitas donde toques */
+    function bindStageMagic() {
+      if (magicBound) return;
+      magicBound = true;
+      const stage = $("#galaxy-stage");
+      stage.addEventListener("pointerdown", (e) => {
+        if (e.target.closest(".orbit-photo, .galaxy-msg, .nav-back")) return;
+        const rect = stage.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const rip = document.createElement("div");
+        rip.className = "stage-ripple";
+        rip.style.left = x + "px";
+        rip.style.top = y + "px";
+        stage.appendChild(rip);
+        setTimeout(() => rip.remove(), 1200);
+        SkyCanvas.burst(x, y, 14);
+
+        for (let k = 0; k < 4; k++) {
+          const sp = document.createElement("div");
+          sp.className = "spark";
+          sp.style.left = (x - 3) + "px";
+          sp.style.top = (y - 3) + "px";
+          sp.style.setProperty("--tx", ((Math.random() - 0.5) * 70).toFixed(0) + "px");
+          sp.style.setProperty("--ty", ((Math.random() - 0.5) * 60).toFixed(0) + "px");
+          sp.style.setProperty("--td", (Math.random() * 0.2).toFixed(2) + "s");
+          stage.appendChild(sp);
+          setTimeout(() => sp.remove(), 1100);
+        }
+      });
+    }
+
+    /* ondas de corazón al entrar a la galaxia */
+    function flashHeart() {
+      const stage = $("#galaxy-stage");
+      const ring = document.createElement("div");
+      ring.className = "stage-flash";
+      stage.appendChild(ring);
+      setTimeout(() => ring.remove(), 1500);
+    }
+
+    /* corazoncitos que brotan de la foto al abrirla */
+    function sparkBurst(x, y, n) {
+      const count = n || 8;
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement("div");
+        h.className = "heart-pop heart-pop-sm";
+        h.textContent = ["💛", "🌼", "🌟"][i % 3];
+        h.style.left = (x + (Math.random() - 0.5) * 120) + "px";
+        h.style.top = (y - 10) + "px";
+        h.style.animationDelay = (Math.random() * 0.3).toFixed(2) + "s";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 2100);
+      }
+    }
+
     function buildMessages() {
       const host = $("#galaxy-messages");
       if (host.childElementCount) return;
@@ -218,7 +559,7 @@
         const photoIdx = typeof m === "string" ? i : (m.photo ?? i);
         const el = document.createElement("div");
         el.className = "galaxy-msg is-btn" + (i % 3 === 0 ? " gold" : "");
-        el.textContent = text;
+        el.innerHTML = `<span class="msg-inner">${text}</span>`;
         el.setAttribute("role", "button");
         el.setAttribute("tabindex", "0");
         el.style.left = slots[i].x + "%";
@@ -249,23 +590,32 @@
       $("#galaxy-intro").textContent = C.galaxy.intro;
 
       buildStars();
+      buildDust();
+      buildFlower();
+      buildSkyfx();
       buildPetals();
       buildHeart();
       buildMessages();
+      bindStageMagic();
 
       wrap.innerHTML = "";
       photoEls = [];
       const disc = document.createElement("div");
       disc.className = "galaxy-disc";
       wrap.appendChild(disc);
+      buildOrbitRings(disc);
 
+      const withGsap = !!window.gsap;
       C.galaxy.photos.forEach((p, i) => {
         const gph = makePhoto(p, i);
         const ph = gph.__photo;
         photoEls.push(gph);
         disc.appendChild(gph);
-        ph.classList.add("orbit-enter");
-        ph.style.animationDelay = Math.min(i * 0.08, 0.9).toFixed(2) + "s";
+        if (!withGsap) {
+          ph.classList.add("orbit-enter");
+          ph.style.animationDelay = Math.min(i * 0.08, 0.9).toFixed(2) + "s";
+        }
+        bindPhotoTilt(ph);
         ph.addEventListener("click", (e) => {
           e.stopPropagation();
           openLightbox(i);
@@ -286,6 +636,10 @@
       if (inner) {
         inner.classList.add("spin-burst");
         setTimeout(() => inner.classList.remove("spin-burst"), 700);
+        const r = inner.getBoundingClientRect();
+        sparkBurst(r.left + r.width / 2, r.top + r.height / 2, 8);
+        const stageRect = $("#galaxy-stage").getBoundingClientRect();
+        SkyCanvas.burst(r.left + r.width / 2 - stageRect.left, r.top + r.height / 2 - stageRect.top, 18);
       }
     }
 
@@ -301,7 +655,14 @@
       });
     }
 
-    return { seed, bindLightbox };
+    function enter() {
+      seed();
+      SkyCanvas.init();
+      playEntrance();
+      flashHeart();
+    }
+
+    return { seed, enter, bindLightbox };
   })();
 
   /* ------------------------------------------------------------
@@ -530,6 +891,25 @@
   }
 
   /* ------------------------------------------------------------
+     Mariposas doradas cruzando la galaxia
+  ------------------------------------------------------------ */
+  function startButterflies() {
+    const host = $("#galaxy-stage");
+    if (!host) return;
+    const glyphs = ["🦋", "🦋", "🌟"];
+    for (let i = 0; i < 3; i++) {
+      const b = document.createElement("div");
+      b.className = "butterfly";
+      b.textContent = glyphs[i];
+      b.style.cssText =
+        `top:${(14 + Math.random() * 46).toFixed(0)}%;` +
+        `--bf:${(14 + Math.random() * 6).toFixed(1)}s;` +
+        `--bd:${(-Math.random() * 16).toFixed(1)}s;`;
+      host.appendChild(b);
+    }
+  }
+
+  /* ------------------------------------------------------------
      Música opcional (se activa desde config.js)
   ------------------------------------------------------------ */
   function setupMusic() {
@@ -560,6 +940,7 @@
     Galaxy.bindLightbox();
     buildAmbient();
     startShootingStars();
+    startButterflies();
     setupMusic();
   }
 
