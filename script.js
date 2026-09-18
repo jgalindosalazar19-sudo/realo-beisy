@@ -1602,7 +1602,7 @@
   function seedMonthFloats() {
     const host = $("#month-floats");
     if (!host || host.childElementCount) return;
-    const glyphs = ["🩶", "✨", "💫", "🌼", "⭐", "🤍"];
+    const glyphs = ["🩶", "✨", "💫", "🌼", "⭐", "🩶"];
     for (let i = 0; i < 10; i++) {
       const s = document.createElement("span");
       s.className = "month-float";
@@ -1623,7 +1623,7 @@
   function buildAmbient() {
     const host = $("#ambient");
     if (!host || host.childElementCount) return;
-    const glyphs = ["🩶", "🌼", "✨", "💫", "🤍", "⭐"];
+    const glyphs = ["🩶", "🌼", "✨", "💫", "🩶", "⭐"];
     for (let i = 0; i < 16; i++) {
       const s = document.createElement("span");
       s.textContent = glyphs[i % glyphs.length];

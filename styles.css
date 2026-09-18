@@ -1038,8 +1038,7 @@ img { -webkit-user-drag: none; user-select: none; }
 .love-ember-heart {
   background: transparent;
   box-shadow: none;
-  color: #ff7188;
-  filter: drop-shadow(0 0 7px rgba(255, 60, 90, 0.9));
+  filter: drop-shadow(0 0 7px rgba(220, 225, 235, 0.85));
 }
 
 @keyframes emberRise {
@@ -3085,7 +3084,7 @@ img { -webkit-user-drag: none; user-select: none; }
   font-size: var(--sz, 18px);
   pointer-events: none;
   opacity: 0;
-  filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.5));
+  filter: drop-shadow(0 0 8px rgba(220, 225, 235, 0.75));
   animation: rainHeart var(--fd, 2.8s) ease-in forwards;
   animation-delay: var(--ad, 0s);
 }
@@ -3106,7 +3105,7 @@ img { -webkit-user-drag: none; user-select: none; }
   font-size: 15px;
   pointer-events: none;
   opacity: 0;
-  filter: drop-shadow(0 0 8px rgba(255, 94, 120, 0.85));
+  filter: drop-shadow(0 0 8px rgba(220, 225, 235, 0.85));
   animation: trailHeart 1.5s ease-out forwards;
 }
 
