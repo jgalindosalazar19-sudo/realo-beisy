@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=15" />
 </head>
 <body>
 
@@ -17,8 +17,15 @@
 
   <!-- ============ LANDING / CANDADOS ============ -->
   <main id="view-landing" class="view active">
+    <div class="landing-bg" aria-hidden="true">
+      <div class="landing-glow landing-glow--a"></div>
+      <div class="landing-glow landing-glow--b"></div>
+      <div class="landing-rays"></div>
+      <div id="landing-stars"></div>
+    </div>
+
     <div class="landing-hero">
-      <div class="hero-emoji">💛</div>
+      <div class="hero-badge"><span class="hero-emoji">💛</span></div>
       <h1 class="hero-title">Nuestras Fechas</h1>
       <p class="hero-sub" id="hero-sub">Tres regalos, tres momentos, una sola persona: vos.</p>
       <div class="hero-date" id="hero-date"></div>
@@ -26,24 +33,33 @@
 
     <div class="cards" id="unlock-cards">
       <button class="unlock-card card-galaxy" data-view="galaxy" data-key="galaxy" aria-label="Sección galaxia">
-        <span class="card-emoji">🌼</span>
-        <span class="card-title">Flores Amarillas</span>
-        <span class="card-sub">21 de septiembre</span>
-        <span class="card-lock"><span class="lock-icon">🔒</span><span class="countdown"></span></span>
+        <span class="card-icon"><span class="card-emoji">🌼</span></span>
+        <span class="card-txt">
+          <span class="card-title">Flores Amarillas</span>
+          <span class="card-sub">21 de septiembre</span>
+        </span>
+        <span class="card-lock"><span class="lock-badge"><span class="lock-icon">🔒</span></span><span class="countdown"></span></span>
+        <span class="card-shine" aria-hidden="true"></span>
       </button>
 
       <button class="unlock-card card-letter" data-view="letter" data-key="letter" aria-label="Sección amor y amistad">
-        <span class="card-emoji">💌</span>
-        <span class="card-title">Amor y Amistad</span>
-        <span class="card-sub">19 de septiembre</span>
-        <span class="card-lock"><span class="lock-icon">🔒</span><span class="countdown"></span></span>
+        <span class="card-icon"><span class="card-emoji">💌</span></span>
+        <span class="card-txt">
+          <span class="card-title">Amor y Amistad</span>
+          <span class="card-sub">19 de septiembre</span>
+        </span>
+        <span class="card-lock"><span class="lock-badge"><span class="lock-icon">🔒</span></span><span class="countdown"></span></span>
+        <span class="card-shine" aria-hidden="true"></span>
       </button>
 
       <button class="unlock-card card-timeline" data-view="timeline" data-key="timeline" aria-label="Sección nustro mes">
-        <span class="card-emoji">💛</span>
-        <span class="card-title">Nuestro Mes</span>
-        <span class="card-sub">22 de septiembre</span>
-        <span class="card-lock"><span class="lock-icon">🔒</span><span class="countdown"></span></span>
+        <span class="card-icon"><span class="card-emoji">💛</span></span>
+        <span class="card-txt">
+          <span class="card-title">Nuestro Mes</span>
+          <span class="card-sub">22 de septiembre</span>
+        </span>
+        <span class="card-lock"><span class="lock-badge"><span class="lock-icon">🔒</span></span><span class="countdown"></span></span>
+        <span class="card-shine" aria-hidden="true"></span>
       </button>
     </div>
 
@@ -147,6 +163,15 @@
       </div>
     </header>
 
+    <!-- Fondo decorativo alrededor del celular -->
+    <div class="month-bg" aria-hidden="true">
+      <div class="month-halo"></div>
+      <div class="month-nebula month-nebula--a"></div>
+      <div class="month-nebula month-nebula--b"></div>
+      <div id="month-stars"></div>
+      <div id="month-floats"></div>
+    </div>
+
     <!-- Celular con pantalla de bloqueo y contador -->
     <div class="month-phone" id="month-phone">
       <div class="phone-screen phone-lock" id="phone-lock">
@@ -193,6 +218,6 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="config.js?v=9"></script>
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=14"></script>
 </body>
 </html>

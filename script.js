@@ -1462,6 +1462,42 @@
   }
 
   /* ------------------------------------------------------------
+     Decoración de cielos: estrellas + flotantes
+  ------------------------------------------------------------ */
+  function seedStars(host, total, cls, colorSet) {
+    if (!host || host.childElementCount) return;
+    for (let i = 0; i < total; i++) {
+      const s = document.createElement("span");
+      s.className = cls;
+      const size = (1.6 + Math.random() * 2.6).toFixed(1);
+      const c = colorSet[i % colorSet.length];
+      s.style.cssText =
+        `left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 100).toFixed(1)}%;` +
+        `width:${size}px;height:${size}px;background:${c};` +
+        `--tw:${(2.6 + Math.random() * 4).toFixed(2)}s;--td:${(-Math.random() * 6).toFixed(2)}s;`;
+      host.appendChild(s);
+    }
+  }
+
+  function seedMonthFloats() {
+    const host = $("#month-floats");
+    if (!host || host.childElementCount) return;
+    const glyphs = ["💛", "✨", "💫", "🌼", "⭐", "🤍"];
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("span");
+      s.className = "month-float";
+      const side = i % 2;
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.left = (side ? 84 + Math.random() * 10 : 4 + Math.random() * 12).toFixed(1) + "%";
+      s.style.top = (20 + Math.random() * 60).toFixed(0) + "%";
+      s.style.setProperty("--sz", (13 + Math.random() * 12).toFixed(1) + "px");
+      s.style.setProperty("--af", (13 + Math.random() * 9).toFixed(1) + "s");
+      s.style.setProperty("--ad", (-Math.random() * 18).toFixed(1) + "s");
+      host.appendChild(s);
+    }
+  }
+
+  /* ------------------------------------------------------------
      Ambiente: corazones y brillitos flotando en toda la página
   ------------------------------------------------------------ */
   function buildAmbient() {
@@ -1548,6 +1584,13 @@
     try { Love.bindLetter(); } catch (e) { console.warn("letter:", e); }
     try { Galaxy.bindLightbox(); } catch (e) { console.warn("lightbox:", e); }
     try { buildAmbient(); } catch (e) { console.warn("ambient:", e); }
+    try {
+      seedStars($("#landing-stars"), 42, "star-dot", ["#ffe14d", "#fff8e1", "#ffd60a", "#ffffff", "#ffb347"]);
+    } catch (e) { console.warn("lstars:", e); }
+    try {
+      seedStars($("#month-stars"), 30, "star-dot", ["#ffe14d", "#fff8e1", "#f5a800", "#ffd60a"]);
+    } catch (e) { console.warn("mstars:", e); }
+    try { seedMonthFloats(); } catch (e) { console.warn("mfloats:", e); }
     try { startShootingStars(); } catch (e) { console.warn("stars:", e); }
     try { startButterflies(); } catch (e) { console.warn("butterflies:", e); }
     try { setupMusic(); } catch (e) { console.warn("music:", e); }
