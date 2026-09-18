@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffd60a" />
+  <title>Para vos 💛</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💛</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============ LANDING / CANDADOS ============ -->
+  <main id="view-landing" class="view active">
+    <div class="landing-hero">
+      <div class="hero-emoji">💛</div>
+      <h1 class="hero-title">Nuestras Fechas</h1>
+      <p class="hero-sub" id="hero-sub">Tres regalos, tres momentos, una sola persona: vos.</p>
+      <div class="hero-date" id="hero-date"></div>
+    </div>
+
+    <div class="cards" id="unlock-cards">
+      <button class="unlock-card card-galaxy" data-view="galaxy" data-key="galaxy" aria-label="Sección galaxia">
+        <span class="card-emoji">🌼</span>
+        <span class="card-title">Flores Amarillas</span>
+        <span class="card-sub">19 de septiembre</span>
+        <span class="card-lock"><span class="lock-icon">🔒</span><span class="countdown"></span></span>
+      </button>
+
+      <button class="unlock-card card-letter" data-view="letter" data-key="letter" aria-label="Sección amor y amistad">
+        <span class="card-emoji">💌</span>
+        <span class="card-title">Amor y Amistad</span>
+        <span class="card-sub">21 de septiembre</span>
+        <span class="card-lock"><span class="lock-icon">🔒</span><span class="countdown"></span></span>
+      </button>
+
+      <button class="unlock-card card-timeline" data-view="timeline" data-key="timeline" aria-label="Sección nustro mes">
+        <span class="card-emoji">💛</span>
+        <span class="card-title">Nuestro Mes</span>
+        <span class="card-sub">22 de septiembre</span>
+        <span class="card-lock"><span class="lock-icon">🔒</span><span class="countdown"></span></span>
+      </button>
+    </div>
+
+    <p class="landing-foot">Hecho con todo el corazón, para la dueña de mis días.</p>
+  </main>
+
+  <!-- ============ SECCIÓN 1: GALAXIA ============ -->
+  <section id="view-galaxy" class="view">
+    <header class="sec-head">
+      <button class="nav-back" data-back="landing" aria-label="Volver">←</button>
+      <div>
+        <h2 id="galaxy-title">Flores Amarillas</h2>
+        <p class="sec-sub" id="galaxy-subtitle"></p>
+      </div>
+    </header>
+
+    <div class="galaxy-stage" id="galaxy-stage">
+      <div class="galaxy-glow"></div>
+      <div class="galaxy-core">
+        <span class="core-emoji">🌼</span>
+        <span class="core-text">Tocá una estrella</span>
+      </div>
+      <div id="galaxy-photos"></div>
+    </div>
+
+    <p class="galaxy-intro" id="galaxy-intro"></p>
+
+    <!-- Foto ampliada -->
+    <div id="photo-lightbox" class="lightbox" aria-hidden="true">
+      <div class="lightbox-card">
+        <div class="lightbox-img-wrap"><img id="lightbox-img" src="" alt="Nuestra foto" /></div>
+        <p class="lightbox-caption" id="lightbox-caption"></p>
+        <button class="lightbox-close" id="lightbox-close" aria-label="Cerrar">✕</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECCIÓN 2: AMOR Y AMISTAD ============ -->
+  <section id="view-letter" class="view">
+    <header class="sec-head">
+      <button class="nav-back" data-back="landing" aria-label="Volver">←</button>
+      <div>
+        <h2 id="letter-title">Amor y Amistad</h2>
+        <p class="sec-sub" id="letter-subtitle"></p>
+      </div>
+    </header>
+
+    <div class="letter-intro" id="letter-intro-wrap">
+      <button class="envelope" id="envelope" aria-label="Abrir sobre">
+        <span class="env-flap"></span>
+        <span class="env-wax">💌</span>
+        <span class="env-label">Tenés un mensaje</span>
+      </button>
+    </div>
+
+    <div class="letter-paper" id="letter-paper" hidden>
+      <h3 class="letter-title" id="letter-paper-title"></h3>
+      <div class="letter-body" id="letter-body"></div>
+      <p class="letter-sign" id="letter-signature"></p>
+    </div>
+
+    <div class="postcards" id="postcards"></div>
+  </section>
+
+  <!-- ============ SECCIÓN 3: NUESTRO MES ============ -->
+  <section id="view-timeline" class="view">
+    <header class="sec-head">
+      <button class="nav-back" data-back="landing" aria-label="Volver">←</button>
+      <div>
+        <h2 id="timeline-title">Nuestro Mes</h2>
+        <p class="sec-sub" id="timeline-subtitle"></p>
+      </div>
+    </header>
+
+    <div class="counter-ring">
+      <div class="counter-numbers">
+        <span class="counter-big" id="counter-days">0</span>
+        <span class="counter-label">días juntos</span>
+        <span class="counter-small" id="counter-time">00:00:00</span>
+      </div>
+    </div>
+
+    <div class="timeline" id="timeline-list"></div>
+
+    <div class="celebrate" id="celebrate-box">
+      <button class="celebrate-cta" id="celebrate-btn">Elija un final 💛</button>
+    </div>
+  </section>
+
+  <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
