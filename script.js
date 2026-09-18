@@ -694,7 +694,7 @@
     function detach() {
       warpState.burst = 0;
       if (raf) { cancelAnimationFrame(raf); raf = 0; }
-      if (flowKill) { flowKill(); flowKill = null; }
+      if (flowKill) { try { flowKill.kill(); } catch (e) { /* noop */ } flowKill = null; }
       if (zoneKills.length) { zoneKills.forEach((k) => k.kill()); zoneKills = []; }
       const canvas = $("#love-canvas");
       if (canvas) { canvas.width = 0; canvas.height = 0; }
