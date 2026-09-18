@@ -224,32 +224,68 @@ img { -webkit-user-drag: none; user-select: none; }
 .nav-back:active { background: rgba(255, 255, 255, 0.16); }
 
 /* ============================================================
-   GALAXIA
+   GALAXIA DE FOTOS (estilo flores amarillas viral)
    ============================================================ */
 
 .galaxy-stage {
   position: relative;
-  height: min(62vh, 520px);
-  border-radius: 26px;
+  width: 100%;
+  min-height: min(68vh, 560px);
+  border-radius: 0 0 26px 26px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 50%, rgba(255, 214, 10, 0.18), transparent 34%),
-    radial-gradient(circle at 50% 50%, var(--bg-2), var(--bg) 75%);
-  border: 1px solid rgba(255, 214, 10, 0.25);
-  box-shadow: inset 0 0 60px rgba(255, 214, 10, 0.10), var(--shadow-card);
+    radial-gradient(70% 55% at 50% 46%, rgba(255, 214, 10, 0.14), transparent 60%),
+    radial-gradient(150% 120% at 50% 8%, #2a1b52, #080514 72%);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55);
+  isolation: isolate;
 }
 
 .galaxy-glow {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(60% 50% at 50% 50%, rgba(255, 214, 10, 0.16), transparent 70%);
-  animation: pulseGlow 4.5s ease-in-out infinite;
+  inset: -30%;
+  background: radial-gradient(45% 40% at 50% 50%, rgba(255, 214, 10, 0.18), transparent 68%);
+  animation: pulseGlow 5.5s ease-in-out infinite;
   pointer-events: none;
+  z-index: 0;
 }
 
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50%      { opacity: 1; transform: scale(1.08); }
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.12); }
+}
+
+/* estrellas doradas titilando */
+.galaxy-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffe14d;
+  box-shadow: 0 0 6px rgba(255, 214, 10, 0.9);
+  animation: twinkle var(--tw, 3s) ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7); }
+  50%      { opacity: 1; transform: scale(1.25); }
+}
+
+/* pétalos brillantes flotando */
+.galaxy-petal {
+  position: absolute;
+  bottom: -36px;
+  font-size: 17px;
+  animation: petalUp var(--pd, 9s) linear infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+}
+
+@keyframes petalUp {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  12%  { opacity: 0.9; }
+  88%  { opacity: 0.9; }
+  100% { transform: translateY(calc(-100% - 58vh)) rotate(340deg); opacity: 0; }
 }
 
 .galaxy-core {
@@ -260,12 +296,26 @@ img { -webkit-user-drag: none; user-select: none; }
   z-index: 1;
   text-align: center;
   pointer-events: none;
+  width: 130px;
+  height: 130px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 10, 0.20), transparent 70%);
+  animation: coreBreathe 4s ease-in-out infinite;
+}
+
+@keyframes coreBreathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -50%) scale(1.08); }
 }
 
 .core-emoji {
   display: block;
-  font-size: clamp(40px, 10vw, 64px);
-  animation: spinSlow 12s linear infinite;
+  font-size: 30px;
+  animation: spinSlow 14s linear infinite;
 }
 
 @keyframes spinSlow {
@@ -274,51 +324,64 @@ img { -webkit-user-drag: none; user-select: none; }
 
 .core-text {
   display: block;
-  margin-top: 6px;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(255, 214, 10, 0.8);
 }
 
-/* ---- estratos de órbita ---- */
-.orbit-layer {
+/* ---- disco de la galaxia: fotos en espiral girando ---- */
+.galaxy-disc {
   position: absolute;
   top: 50%;
   left: 50%;
-  will-change: transform;
-  animation: orbitLayer var(--orb-d) linear infinite;
-  animation-delay: var(--orb-o);
+  z-index: 2;
+  animation: discSpin 110s linear infinite;
 }
 
-@keyframes orbitLayer {
-  from { transform: translateX(var(--orb-r)) rotate(0deg); }
-  to   { transform: translateX(var(--orb-r)) rotate(360deg); }
+@keyframes discSpin {
+  to { transform: rotate(360deg); }
 }
 
-.orbit-counter {
+.gph {
   position: absolute;
   top: 0;
   left: 0;
   will-change: transform;
-  animation: orbitCounter var(--orb-d) linear infinite;
-  animation-delay: var(--orb-o);
 }
 
-@keyframes orbitCounter {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(-360deg); }
+.gph-inner {
+  position: absolute;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  animation: photoCounter 110s linear infinite;
+}
+
+@keyframes photoCounter {
+  to { transform: rotate(-360deg); }
 }
 
 .orbit-photo {
-  position: absolute;
-  width: 84px;
-  height: 84px;
+  position: relative;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: 2px solid var(--yellow);
-  box-shadow: 0 0 14px rgba(255, 214, 10, 0.45), 0 6px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 18px rgba(255, 214, 10, 0.55), 0 8px 20px rgba(0, 0, 0, 0.55);
   cursor: pointer;
   will-change: transform;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.1), opacity 0.45s ease;
+  overflow: hidden;
+}
+
+.orbit-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 18px rgba(255, 214, 10, 0.35);
+  pointer-events: none;
 }
 
 .orbit-photo img {
@@ -327,10 +390,6 @@ img { -webkit-user-drag: none; user-select: none; }
   border-radius: 50%;
   object-fit: cover;
   pointer-events: none;
-}
-
-.orbit-photo {
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.1), opacity 0.45s ease;
 }
 
 .orbit-enter {
@@ -353,13 +412,28 @@ img { -webkit-user-drag: none; user-select: none; }
   100% { transform: scale(1) rotate(360deg); }
 }
 
+.galaxy-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  text-align: center;
+  z-index: 5;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 214, 10, 0.75);
+  pointer-events: none;
+}
+
 .galaxy-intro {
-  margin: 16px auto 0;
+  margin: 18px auto 0;
   max-width: 54ch;
   text-align: center;
   font-size: 14.5px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: rgba(255, 248, 225, 0.8);
+  padding: 0 6px;
 }
 
 /* ---- lightbox: foto ampliada ---- */
@@ -813,5 +887,5 @@ img { -webkit-user-drag: none; user-select: none; }
 
 /* ---------- responsive fino ---------- */
 @media (min-width: 700px) {
-  .orbit-photo { width: 100px; height: 100px; }
+  .gph-inner { width: 104px; height: 104px; margin: -52px 0 0 -52px; }
 }

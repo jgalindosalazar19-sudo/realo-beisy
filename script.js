@@ -111,29 +111,27 @@
   }
 
   /* ------------------------------------------------------------
-     GALAXIA — órbita circular de fotos
+     GALAXIA DE FOTOS — disco en espiral + estrellas doradas
   ------------------------------------------------------------ */
   const Galaxy = (() => {
     let photoEls = [];
     const stage = $("#galaxy-stage");
 
     function makePhoto(p, idx) {
+      const limit = Math.min(window.innerWidth || 390, 520);
+      const minR = Math.round(limit * 0.16) + 10;
+      const maxR = Math.round(limit * 0.40);
       const n = C.galaxy.photos.length;
-      const R = Math.round(Math.max(22, Math.min(window.innerHeight, 520) * (0.24 + (idx % 4) * 0.085)));
-      const baseSpeed = 0.045 + (idx % 4) * 0.02;
-      const speed = Math.round(baseSpeed * 1000) / 1000;
-      const dur = 60 / speed;
+      const f = (idx + 0.5) / n;
+      const ang = idx * 137.5;
+      const rad = minR + f * (maxR - minR) + Math.sin(idx * 1.7) * 14;
 
-      const orbit = document.createElement("div");
-      orbit.className = "orbit-layer";
-      orbit.style.cssText =
-        `--orb-d:${dur}s;` +
-        `--orb-o:${(-360 * Math.random()).toFixed(1)}s;` +
-        `--orb-r:${R}px;` +
-        `--orb-s:${speed}`;
+      const gph = document.createElement("div");
+      gph.className = "gph";
+      gph.style.cssText = `--ang:${ang.toFixed(1)}deg;--rad:${rad.toFixed(0)}px`;
 
-      const counter = document.createElement("div");
-      counter.className = "orbit-counter";
+      const inner = document.createElement("div");
+      inner.className = "gph-inner";
 
       const d = document.createElement("div");
       d.className = "orbit-photo";
@@ -148,9 +146,42 @@
       };
       img.src = p.src;
       d.appendChild(img);
-      counter.appendChild(d);
-      orbit.appendChild(counter);
-      return orbit;
+      inner.appendChild(d);
+      gph.appendChild(inner);
+      gph.__photo = d;
+      return gph;
+    }
+
+    function buildStars() {
+      const host = $("#galaxy-stars");
+      if (host.childElementCount) return;
+      const colors = ["#ffe14d", "#fff8e1", "#ffd60a"];
+      for (let i = 0; i < 60; i++) {
+        const s = document.createElement("div");
+        s.className = "galaxy-star";
+        const size = (1.5 + Math.random() * 2.5).toFixed(1);
+        s.style.cssText =
+          `left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 100).toFixed(1)}%;` +
+          `width:${size}px;height:${size}px;background:${colors[i % colors.length]};` +
+          `--tw:${(2 + Math.random() * 3).toFixed(1)}s;animation-delay:${(-Math.random() * 4).toFixed(2)}s;`;
+        host.appendChild(s);
+      }
+    }
+
+    function buildPetals() {
+      const host = $("#galaxy-petals");
+      if (host.childElementCount) return;
+      const emojis = ["🌼", "✨", "💛"];
+      for (let i = 0; i < 9; i++) {
+        const p = document.createElement("div");
+        p.className = "galaxy-petal";
+        p.textContent = emojis[i % emojis.length];
+        p.style.cssText =
+          `left:${(3 + Math.random() * 92).toFixed(1)}%;` +
+          `--pd:${(7 + Math.random() * 6).toFixed(1)}s;` +
+          `animation-delay:${(-Math.random() * 9).toFixed(1)}s;`;
+        host.appendChild(p);
+      }
     }
 
     function seed() {
@@ -163,18 +194,23 @@
       $("#galaxy-subtitle").textContent = s;
       $("#galaxy-intro").textContent = C.galaxy.intro;
 
+      buildStars();
+      buildPetals();
+
       wrap.innerHTML = "";
       photoEls = [];
-      const n = C.galaxy.photos.length;
+      const disc = document.createElement("div");
+      disc.className = "galaxy-disc";
+      wrap.appendChild(disc);
+
       C.galaxy.photos.forEach((p, i) => {
-        const el = makePhoto(p, i);
-        photoEls.push(el);
-        wrap.appendChild(el);
-        el.classList.add("orbit-enter");
-        const cycle = Math.floor(i / n);
-        const idx = n * cycle + i;
-        el.style.transitionDelay = (idx * 0.06).toFixed(2) + "s";
-        el.addEventListener("click", (e) => {
+        const gph = makePhoto(p, i);
+        const ph = gph.__photo;
+        photoEls.push(gph);
+        disc.appendChild(gph);
+        ph.classList.add("orbit-enter");
+        ph.style.transitionDelay = Math.min(i * 0.08, 0.9).toFixed(2) + "s";
+        ph.addEventListener("click", (e) => {
           e.stopPropagation();
           openLightbox(i);
         });
@@ -184,12 +220,12 @@
         (entries, obs) => {
           entries.forEach((en) => {
             if (en.isIntersecting) {
-              photoEls.forEach((ph) => ph.classList.add("orbit-visible"));
+              photoEls.forEach((el) => el.__photo.classList.add("orbit-visible"));
               obs.disconnect();
             }
           });
         },
-        { threshold: 0.25 }
+        { threshold: 0.2 }
       );
       io.observe(stage);
     }
