@@ -169,7 +169,7 @@
       img.alt = p.caption || "Nuestra foto";
       img.draggable = false;
       img.onerror = () => {
-        img.alt = "💛";
+        img.alt = "🩶";
         img.style.background = "linear-gradient(135deg,#241a4d,#f5a800)";
       };
       img.src = p.src;
@@ -202,7 +202,7 @@
     function buildPetals() {
       const host = $("#galaxy-petals");
       if (host.childElementCount) return;
-      const emojis = ["🌼", "✨", "💛", "🌻"];
+      const emojis = ["🌼", "✨", "🩶", "🌻"];
       for (let i = 0; i < 16; i++) {
         const p = document.createElement("div");
         p.className = "galaxy-petal" + (i % 5 === 0 ? " is-front" : "");
@@ -325,7 +325,7 @@
           `--st:${(9 + Math.random() * 7).toFixed(1)}s;--sd:${(-Math.random() * 14).toFixed(1)}s;`;
         host.appendChild(st);
       }
-      const bolts = ["✦", "✧", "❀", "💛"];
+      const bolts = ["✦", "✧", "❀", "🩶"];
       for (let i = 0; i < 6; i++) {
         const b = document.createElement("span");
         b.className = "big-sparkle";
@@ -580,7 +580,7 @@
       const stage = $("#galaxy-stage");
       const rain = document.createElement("div");
       rain.className = "galaxy-rain";
-      const glyphs = ["🌼", "💛", "✨", "🌻"];
+      const glyphs = ["🌼", "🩶", "✨", "🌻"];
       for (let i = 0; i < 16; i++) {
         const d = document.createElement("span");
         d.className = "galaxy-rain-drop";
@@ -602,7 +602,7 @@
       for (let i = 0; i < count; i++) {
         const h = document.createElement("div");
         h.className = "heart-pop heart-pop-sm";
-        h.textContent = ["💛", "🌼", "🌟"][i % 3];
+        h.textContent = ["🩶", "🌼", "🌟"][i % 3];
         h.style.left = (x + (Math.random() - 0.5) * 120) + "px";
         h.style.top = (y - 10) + "px";
         h.style.animationDelay = (Math.random() * 0.3).toFixed(2) + "s";
@@ -975,7 +975,7 @@
         e.style.left = (2 + Math.random() * 96).toFixed(1) + "%";
         const sz = 3 + Math.random() * 4;
         if (i % 7 === 0) {
-          e.textContent = "❤️";
+          e.textContent = "🩶";
           e.classList.add("love-ember-heart");
           e.style.fontSize = (sz * 3) + "px";
           e.style.lineHeight = "1";
@@ -1037,7 +1037,7 @@
       const r = stage.getBoundingClientRect();
       const cx = r.width / 2;
       const cy = r.height * 0.42;
-      const glyphs = ["❤️", "🌹", "💌"];
+      const glyphs = ["🩶", "🌹", "💌"];
       for (let i = 0; i < 12; i++) {
         const e = document.createElement("div");
         e.className = "love-burst";
@@ -1059,7 +1059,7 @@
       const g = window.gsap;
       const msgs = C.letter.journey.messages || [];
       const pace = C.letter.journey.pace || 0.9;
-      const glyphs = ["❤️", "🌹", "💌", "✦", "🌙", "💫"];
+      const glyphs = ["🩶", "🌹", "💌", "✦", "🌙", "💫"];
       pool.forEach((mi, i) => {
         const el = document.createElement("div");
         const tier = [26, 32, 42, 54][mi % 4];
@@ -1485,7 +1485,7 @@
       });
       if (ep) ep.textContent = C.timeline.epilogue;
       const f = $("#month-forever-btn");
-      if (f) f.textContent = M.celebrationCTA || "Quedate para siempre 💛";
+      if (f) f.textContent = M.celebrationCTA || "Quedate para siempre 🩶";
     }
 
     /* ---------- apertura/cierre de overlays + acciones ---------- */
@@ -1514,7 +1514,7 @@
       }
       const msg = document.createElement("div");
       msg.className = "month-forever-msg";
-      msg.textContent = "Y no es un adiós, es el empezar de siempre 💛";
+      msg.textContent = "Y no es un adiós, es el empezar de siempre 🩶";
       document.body.appendChild(msg);
       setTimeout(() => msg.remove(), 3200);
     }
@@ -1568,7 +1568,7 @@
       setTimeout(() => el.remove(), (dur + 0.6) * 1000);
     }
 
-    const glyphs = love ? ["❤️", "🌹", "💌"] : ["💛", "🌼"];
+    const glyphs = love ? ["🩶", "🌹", "💌"] : ["🩶", "🌼"];
     for (let i = 0; i < 10; i++) {
       const h = document.createElement("div");
       h.className = "heart-pop";
@@ -1602,7 +1602,7 @@
   function seedMonthFloats() {
     const host = $("#month-floats");
     if (!host || host.childElementCount) return;
-    const glyphs = ["💛", "✨", "💫", "🌼", "⭐", "🤍"];
+    const glyphs = ["🩶", "✨", "💫", "🌼", "⭐", "🤍"];
     for (let i = 0; i < 10; i++) {
       const s = document.createElement("span");
       s.className = "month-float";
@@ -1623,7 +1623,7 @@
   function buildAmbient() {
     const host = $("#ambient");
     if (!host || host.childElementCount) return;
-    const glyphs = ["💛", "🌼", "✨", "💫", "🤍", "⭐"];
+    const glyphs = ["🩶", "🌼", "✨", "💫", "🤍", "⭐"];
     for (let i = 0; i < 16; i++) {
       const s = document.createElement("span");
       s.textContent = glyphs[i % glyphs.length];
@@ -1829,7 +1829,7 @@
   }
 
   function spawnTapSpark(x, y) {
-    const glyphs = ["✨", "💛", "💫"];
+    const glyphs = ["✨", "🩶", "💫"];
     const n = 3 + Math.floor(Math.random() * 3);
     for (let i = 0; i < n; i++) {
       const s = document.createElement("span");
@@ -1850,7 +1850,7 @@
   ------------------------------------------------------------ */
   function heartsRain() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const glyphs = ["💛", "💛", "❤️", "💖", "✨", "🌼"];
+    const glyphs = ["🩶", "🩶", "🩶", "🩶", "✨", "🌼"];
     for (let i = 0; i < 18; i++) {
       const s = document.createElement("span");
       s.className = "rain-heart";
@@ -1876,7 +1876,7 @@
       last = now;
       const s = document.createElement("span");
       s.className = "trail-heart";
-      s.textContent = e.pointerType === "touch" ? "💛" : "❤️";
+      s.textContent = e.pointerType === "touch" ? "🩶" : "🩶";
       s.style.left = e.clientX + "px";
       s.style.top = e.clientY + "px";
       s.style.setProperty("--tx", (Math.random() * 44 - 22).toFixed(0) + "px");
@@ -1950,7 +1950,7 @@
         number: { value: 70 },
         color: { value: ["#ffd60a", "#ffe14d", "#ff8fab", "#fff8e1"] },
         shape: { type: "image", options: { image: [
-          { src: emojiUrl("💛"), width: 48, height: 48 },
+          { src: emojiUrl("🩶"), width: 48, height: 48 },
           { src: emojiUrl("🌼"), width: 48, height: 48 },
         ] } },
         opacity: {

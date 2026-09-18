@@ -80,8 +80,8 @@ window.PAGE_CONFIG = {
     pinCode: "02222026",
     anniversary: new Date(2026, 1, 22, 10, 3, 0),
     counterTitle: "Llevamos juntos...",
-    celebrationTitle: "¿Qué va a ser? 💛",
-    celebrationCTAs: ["¿Qué va a ser? 👇", "Quedate un mes más", "Quedate otro mes más", "Quedate para siempre 💛"],
+    celebrationTitle: "¿Qué va a ser? 🩶",
+    celebrationCTAs: ["¿Qué va a ser? 👇", "Quedate un mes más", "Quedate otro mes más", "Quedate para siempre 🩶"],
     letter: {
       title: "Para mi niña, un mes de nosotros 💌",
       body: [
@@ -90,12 +90,12 @@ window.PAGE_CONFIG = {
         "Gracias por cada buenos días, por cada risa, por cada te amo. Gracias por dejarme amarte y por amarme así de lindo.",
         "Feliz mes, mi niña. Quiero cien más, mil más, toda la vida."
       ],
-      signature: "— Tu persona, con todo mi amor 💛"
+      signature: "— Tu persona, con todo mi amor 🩶"
     },
     memories: {
-      title: "Nuestros recuerdos 💛",
+      title: "Nuestros recuerdos 🩶",
       subtitle: "un poquito de lo que ya vivimos",
-      celebrationCTA: "Quedate para siempre 💛"
+      celebrationCTA: "Quedate para siempre 🩶"
     },
     milestones: [
       { days: 1, title: "Día 1 — El comienzo", text: "El día que dijimos \"sí\" y el universo sonrió." },
