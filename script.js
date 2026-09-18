@@ -69,6 +69,24 @@
     return `${days[d.getDay()]} ${d.getDate()} de ${months[d.getMonth()]}, ${d.getFullYear()}`;
   }
 
+  const cardStatus = {};
+
+  function celebrateUnlock(card) {
+    try {
+      explode(card, false);
+      if (card.animate) {
+        card.animate(
+          [
+            { transform: "scale(1)", boxShadow: "0 0 0 0 rgba(255, 214, 10, 0.75)" },
+            { offset: 0.6, transform: "scale(1.045)", boxShadow: "0 0 0 18px rgba(255, 214, 10, 0)" },
+            { transform: "scale(1)", boxShadow: "0 0 0 24px rgba(255, 214, 10, 0)" },
+          ],
+          { duration: 1100, easing: "ease-out" }
+        );
+      }
+    } catch (e) { /* noop */ }
+  }
+
   function renderCards() {
     const heroDate = $("#hero-date");
     if (heroDate) heroDate.textContent = formatDate(new Date());
@@ -76,7 +94,10 @@
     $$(".unlock-card").forEach((card) => {
       const key = card.dataset.key;
       const open = unlockedStore[key];
+      const was = cardStatus[key];
       card.classList.toggle("unlocked", open);
+      if (was === false && open) celebrateUnlock(card);
+      cardStatus[key] = open;
       const icon = $(".lock-icon", card);
       const cd = $(".countdown", card);
       icon.textContent = open ? "🔓" : "🔒";
@@ -1582,7 +1603,8 @@
   }
 
   /* ------------------------------------------------------------
-     LOVE FIELD — canvas de corazones dorados y destellos
+     LOVE FIELD — orbs bokeh de amor + cometas doradas
+     (el polvo de oro fino lo dibuja tsParticles)
   ------------------------------------------------------------ */
   function startLoveCanvas() {
     const cv = $("#love-canvas");
@@ -1591,9 +1613,12 @@
     if (!ctx) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const PALETTE = ["255,214,10", "255,225,77", "255,143,171", "255,248,225"];
+    const ORBS = [
+      [255, 214, 10], [255, 143, 171], [176, 130, 255], [255, 185, 45], [255, 105, 165],
+    ];
     let W = 0, H = 0, raf = null, running = false;
-    const parts = [];
+    const orbs = [];
+    const comets = [];
 
     function resize() {
       W = window.innerWidth;
@@ -1605,83 +1630,73 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function make(init) {
-      const big = Math.random() < 0.07;
+    function newOrb(init) {
       return {
         x: Math.random() * W,
-        y: init ? Math.random() * H : H + 24 + Math.random() * 60,
-        r: big ? 3.6 + Math.random() * 1.4 : 1.2 + Math.random() * 2.4,
-        vy: (big ? 0.14 : 0.3) + Math.random() * 0.6,
+        y: init ? Math.random() * H : H + 90 + Math.random() * 130,
+        r: 46 + Math.random() * 110,
+        vy: 0.05 + Math.random() * 0.14,
         sway: Math.random() * Math.PI * 2,
-        sw: 0.008 + Math.random() * 0.02,
+        sw: 0.003 + Math.random() * 0.006,
         phase: Math.random() * Math.PI * 2,
-        tw: big ? 0.9 + Math.random() * 0.4 : 0.5 + Math.random() * 0.9,
-        c: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-        heart: big || Math.random() < 0.3,
+        c: ORBS[Math.floor(Math.random() * ORBS.length)],
       };
     }
 
-    function heartPath(x, y, s) {
-      ctx.moveTo(x, y + s * 0.35);
-      ctx.bezierCurveTo(x - s, y - s * 0.5, x - s * 0.5, y - s, x, y - s * 0.25);
-      ctx.bezierCurveTo(x + s * 0.5, y - s, x + s, y - s * 0.5, x, y + s * 0.35);
+    function spawnComet() {
+      const fromLeft = Math.random() < 0.5;
+      comets.push({
+        x: fromLeft ? -40 : W + 40,
+        y: 0.08 * H + Math.random() * 0.42 * H,
+        vx: (fromLeft ? 1 : -1) * (2.2 + Math.random() * 1.4),
+        vy: 0.7 + Math.random() * 0.7,
+        len: 90 + Math.random() * 90,
+      });
     }
 
     function drawFrame() {
       ctx.clearRect(0, 0, W, H);
-      const pos = [];
-      for (const p of parts) {
-        p.y -= p.vy;
-        p.sway += p.sw;
-        p.phase += 0.05;
-        pos.push([p.x + Math.sin(p.sway) * 14, p.y]);
+
+      for (const o of orbs) {
+        o.y -= o.vy;
+        o.sway += o.sw;
+        o.phase += 0.02;
+        const x = o.x + Math.sin(o.sway) * 40;
+        const alpha = 0.05 + 0.045 * (0.5 + 0.5 * Math.sin(o.phase));
+        const g = ctx.createRadialGradient(x, o.y, 0, x, o.y, o.r);
+        g.addColorStop(0, "rgba(" + o.c.join(",") + "," + alpha.toFixed(3) + ")");
+        g.addColorStop(1, "rgba(" + o.c.join(",") + ",0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, o.y, o.r, 0, Math.PI * 2);
+        ctx.fill();
+        if (o.y < -o.r - 40) Object.assign(o, newOrb(false));
       }
 
-      ctx.lineWidth = 1;
-      for (let i = 0; i < parts.length; i++) {
-        for (let j = i + 1; j < parts.length; j++) {
-          const dx = pos[i][0] - pos[j][0];
-          const dy = pos[i][1] - pos[j][1];
-          const d2 = dx * dx + dy * dy;
-          if (d2 < 12100) {
-            const d = Math.sqrt(d2);
-            ctx.globalAlpha = (1 - d / 110) * 0.15;
-            ctx.strokeStyle = "rgba(255, 214, 10, 1)";
-            ctx.beginPath();
-            ctx.moveTo(pos[i][0], pos[i][1]);
-            ctx.lineTo(pos[j][0], pos[j][1]);
-            ctx.stroke();
-          }
-        }
-      }
-      ctx.globalAlpha = 1;
-
-      for (let i = 0; i < parts.length; i++) {
-        const p = parts[i];
-        const x = pos[i][0];
-        const y = pos[i][1];
-        if (y > -30) {
-          const alpha = (0.30 + 0.28 * (0.5 + 0.5 * Math.sin(p.phase))) * p.tw;
-          const col = "rgba(" + p.c + "," + alpha.toFixed(3) + ")";
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.fillStyle = col;
-          ctx.beginPath();
-          if (p.heart) heartPath(x, y, p.r * 2.6);
-          else ctx.arc(x, y, p.r, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalAlpha = alpha * 0.35;
-          ctx.beginPath();
-          ctx.arc(x, y, p.r * 3.4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        }
-        if (y < -30) Object.assign(p, make(false));
+      for (let i = comets.length - 1; i >= 0; i--) {
+        const c = comets[i];
+        c.x += c.vx;
+        c.y += c.vy;
+        const g = ctx.createLinearGradient(c.x, c.y, c.x - c.vx * c.len, c.y - c.vy * c.len);
+        g.addColorStop(0, "rgba(255, 225, 77, 0.85)");
+        g.addColorStop(1, "rgba(255, 214, 10, 0)");
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(c.x, c.y);
+        ctx.lineTo(c.x - c.vx * c.len, c.y - c.vy * c.len);
+        ctx.stroke();
+        ctx.fillStyle = "rgba(255, 240, 185, 0.95)";
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        if (c.x < -160 || c.x > W + 160 || c.y > H + 90) comets.splice(i, 1);
       }
     }
 
     resize();
-    for (let i = 0; i < 84; i++) parts.push(make(true));
+    for (let i = 0; i < 8; i++) orbs.push(newOrb(true));
 
     if (reduced) {
       drawFrame();
@@ -1696,7 +1711,7 @@
 
     running = true;
     loop();
-    window.addEventListener("resize", () => { resize(); });
+    window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
         running = false;
@@ -1706,6 +1721,9 @@
         loop();
       }
     });
+    setInterval(() => {
+      if (!document.hidden && comets.length < 2) spawnComet();
+    }, 6000);
   }
 
   /* ------------------------------------------------------------
@@ -1776,6 +1794,96 @@
   }
 
   /* ------------------------------------------------------------
+     Entrada del hero: letras que vuelan (una sola vez)
+  ------------------------------------------------------------ */
+  function splitLetters(title) {
+    if (title.dataset.split) return [];
+    const text = title.textContent.trim();
+    title.textContent = "";
+    const spans = [];
+    for (const ch of text) {
+      const s = document.createElement("span");
+      s.className = "hl";
+      if (ch === " ") {
+        s.style.width = "0.34em";
+        s.textContent = "\u00A0";
+      } else {
+        s.textContent = ch;
+      }
+      spans.push(s);
+      title.appendChild(s);
+    }
+    title.dataset.split = "1";
+    return spans;
+  }
+
+  function playHeroIntro() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.gsap) return;
+    const title = $(".hero-title");
+    const badge = $(".hero-badge");
+    const sub = $(".hero-sub");
+    const date = $("#hero-date");
+    if (!title || !badge || !sub || !date) return;
+    const letters = splitLetters(title);
+    if (!letters.length) return;
+    const tl = window.gsap.timeline({ defaults: { ease: "power3.out" } });
+    tl.fromTo(badge, { scale: 0, rotate: -30, opacity: 0 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.55, ease: "back.out(1.8)" })
+      .fromTo(letters, { y: 46, rotate: 8, opacity: 0 }, { y: 0, rotate: 0, opacity: 1, duration: 0.5, stagger: 0.04, ease: "back.out(1.6)" }, "-=0.25")
+      .fromTo(sub, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.15")
+      .fromTo(date, { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" }, "-=0.1");
+  }
+
+  /* ------------------------------------------------------------
+     Polvo de oro — tsParticles
+  ------------------------------------------------------------ */
+  function initTSParticles() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.tsParticles) return;
+    const host = $(".gold-dust");
+    if (!host) return;
+
+    const emojiUrl = (ch) =>
+      "data:image/svg+xml," + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">' +
+        '<text y="40" font-size="42">' + ch + "</text></svg>"
+      );
+
+    window.__tsP = window.tsParticles.load(host, {
+      fpsLimit: 60,
+      pauseOnBlur: true,
+      detectRetina: true,
+      background: { color: "transparent" },
+      particles: {
+        number: { value: 70 },
+        color: { value: ["#ffd60a", "#ffe14d", "#ff8fab", "#fff8e1"] },
+        shape: { type: "image", options: { image: [
+          { src: emojiUrl("💛"), width: 48, height: 48 },
+          { src: emojiUrl("🌼"), width: 48, height: 48 },
+        ] } },
+        opacity: {
+          value: 0.5,
+          animation: { enable: true, speed: 0.6, sync: false, minimumValue: 0.15 },
+        },
+        size: { value: 16, random: { enable: true, minimumValue: 5 } },
+        move: {
+          enable: true,
+          speed: 0.55,
+          direction: "top",
+          straight: false,
+          outModes: { default: "bounce" },
+        },
+        twinkle: { particles: { enable: true, color: "#ffe14d", frequency: 0.05, opacity: 0.6 } },
+        links: { enable: true, distance: 110, color: "#ffd60a", opacity: 0.18, width: 1 },
+      },
+      interactivity: {
+        detectsOn: "window",
+        events: { onHover: { enable: false }, onClick: { enable: false }, resize: true },
+      },
+    });
+  }
+
+  /* ------------------------------------------------------------
      Boot
   ------------------------------------------------------------ */
   function boot() {
@@ -1799,6 +1907,8 @@
     try { startShootingStars(); } catch (e) { console.warn("stars:", e); }
     try { startButterflies(); } catch (e) { console.warn("butterflies:", e); }
     try { setupMusic(); } catch (e) { console.warn("music:", e); }
+    try { initTSParticles(); } catch (e) { console.warn("tsparticles:", e); }
+    try { playHeroIntro(); } catch (e) { console.warn("hero:", e); }
   }
 
   if (document.readyState === "loading") {

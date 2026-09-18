@@ -54,7 +54,7 @@ button {
 img { -webkit-user-drag: none; user-select: none; }
 
 /* ---------- vistas ---------- */
-.view { display: none; min-height: 100vh; padding: 0 18px 40px; }
+.view { display: none; min-height: 100vh; padding: 0 18px 40px; position: relative; z-index: 1; }
 .view.active { display: block; animation: viewIn 0.35s ease both; }
 
 @keyframes viewIn {
@@ -205,6 +205,17 @@ img { -webkit-user-drag: none; user-select: none; }
 
 @keyframes shimmer {
   to { background-position: 220% center; }
+}
+
+.hero-title .hl {
+  display: inline-block;
+  background: var(--gold-grad);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+  will-change: transform;
 }
 
 .hero-sub {
@@ -374,6 +385,106 @@ img { -webkit-user-drag: none; user-select: none; }
 @keyframes shineSweep {
   0%, 55% { left: -60%; }
   85%, 100% { left: 130%; }
+}
+
+/* orbita de destellos alrededor del icono */
+.card-orbit {
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+  z-index: 0;
+  animation: orbitSpin 6s linear infinite;
+}
+
+.card-orbit::after {
+  content: "✦";
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  margin-left: -8px;
+  font-size: 15px;
+  color: rgba(255, 214, 10, 0.85);
+  filter: drop-shadow(0 0 7px rgba(255, 214, 10, 0.95));
+}
+
+.unlock-card:not(.unlocked) .card-orbit::after {
+  color: rgba(255, 255, 255, 0.38);
+  filter: none;
+}
+
+@keyframes orbitSpin { to { transform: rotate(360deg); } }
+
+/* candado que late suave mientras espera ser abierto */
+.unlock-card:not(.unlocked) .lock-icon {
+  animation: lockBreath 2.4s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes lockBreath {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.16); }
+}
+
+/* aurora de color que respira en la esquina de cada tarjeta */
+.unlock-card::after {
+  content: "";
+  position: absolute;
+  top: -46px;
+  left: -46px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  filter: blur(34px);
+  pointer-events: none;
+  animation: cardAurora 5.2s ease-in-out infinite;
+}
+
+.card-galaxy::after       { background: radial-gradient(circle, rgba(150, 90, 255, 0.55), transparent 65%); }
+.card-letter::after       { background: radial-gradient(circle, rgba(255, 110, 160, 0.55), transparent 65%); }
+.card-timeline::after     { background: radial-gradient(circle, rgba(255, 205, 40, 0.55), transparent 65%); }
+
+@keyframes cardAurora {
+  0%, 100% { opacity: 0.16; }
+  50%      { opacity: 0.48; }
+}
+
+/* hover: la tarjeta abierta se eleva con glow dorado */
+@media (hover: hover) {
+  .unlock-card.unlocked:hover:not(:active) {
+    translate: 0 -3px;
+    border-color: rgba(255, 214, 10, 0.72);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 214, 10, 0.34);
+  }
+}
+
+/* fondo de cielo que respira, atras de todo */
+.skywash {
+  position: fixed;
+  inset: -25%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 45% at 22% 18%, rgba(176, 130, 255, 0.20), transparent 60%),
+    radial-gradient(42% 52% at 82% 26%, rgba(255, 214, 10, 0.16), transparent 60%),
+    radial-gradient(50% 60% at 55% 88%, rgba(255, 143, 171, 0.15), transparent 62%);
+  filter: blur(44px);
+  animation: skyDrift 90s ease-in-out infinite alternate;
+}
+
+@keyframes skyDrift {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to   { transform: translate3d(3%, 2%, 0) scale(1.06); }
+}
+
+/* contenedor del polvo de oro de tsParticles */
+.gold-dust {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .landing-foot {
@@ -2230,7 +2341,9 @@ img { -webkit-user-drag: none; user-select: none; }
   .tap-spark, .unlock-card.unlocked .card-icon,
   .unlock-card.unlocked .lock-badge::after,
   .phone-lock::before, .phone-counter::before, .phone-lock-title,
-  .rain-heart, .trail-heart {
+  .rain-heart, .trail-heart,
+  .skywash, .card-orbit, .card-orbit::after, .unlock-card::after,
+  .unlock-card:not(.unlocked) .lock-icon {
     animation: none !important;
     transition: none !important;
 }
