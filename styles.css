@@ -2229,7 +2229,8 @@ img { -webkit-user-drag: none; user-select: none; }
   .month-float, .star-dot,
   .tap-spark, .unlock-card.unlocked .card-icon,
   .unlock-card.unlocked .lock-badge::after,
-  .phone-lock::before, .phone-counter::before, .phone-lock-title {
+  .phone-lock::before, .phone-counter::before, .phone-lock-title,
+  .rain-heart, .trail-heart {
     animation: none !important;
     transition: none !important;
 }
@@ -2750,4 +2751,43 @@ img { -webkit-user-drag: none; user-select: none; }
 @keyframes titleGlow {
   0%, 100% { filter: drop-shadow(0 0 14px rgba(255, 214, 10, 0.5)); }
   50%      { filter: drop-shadow(0 0 32px rgba(255, 214, 10, 0.95)); }
+}
+
+/* lluvia de corazones al entrar a una sección */
+.rain-heart {
+  position: fixed;
+  top: -34px;
+  left: var(--lx, 12%);
+  z-index: 998;
+  font-size: var(--sz, 18px);
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.5));
+  animation: rainHeart var(--fd, 2.8s) ease-in forwards;
+  animation-delay: var(--ad, 0s);
+}
+
+@keyframes rainHeart {
+  0%   { transform: translateY(0) rotate(-10deg) scale(0.7); opacity: 0; }
+  12%  { opacity: 0.95; }
+  85%  { opacity: 0.95; }
+  100% { transform: translateY(122vh) rotate(14deg) scale(1.06); opacity: 0; }
+}
+
+/* estela de corazones siguiendo el dedo / cursor */
+.trail-heart {
+  position: fixed;
+  z-index: 997;
+  left: 0;
+  top: 0;
+  font-size: 15px;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px rgba(255, 94, 120, 0.85));
+  animation: trailHeart 1.5s ease-out forwards;
+}
+
+@keyframes trailHeart {
+  0%   { opacity: 0.9; transform: translate(-50%, -50%) scale(0.5) translateY(0); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3) translate(var(--tx), -34px) rotate(24deg); }
 }

@@ -84,6 +84,12 @@
     });
   }
 
+  function startLiveCards() {
+    setInterval(() => {
+      try { renderCards(); } catch (e) { /* noop */ }
+    }, 60000);
+  }
+
   /* ------------------------------------------------------------
      Navegación entre vistas
   ------------------------------------------------------------ */
@@ -103,6 +109,7 @@
       if (kv === "galaxy") Galaxy.enter();
       if (kv === "letter") Love.enter();
       if (kv === "timeline") Counter.onEnter();
+      heartsRain();
     });
 
     $$(".nav-back").forEach((btn) => {
@@ -1599,17 +1606,18 @@
     }
 
     function make(init) {
+      const big = Math.random() < 0.07;
       return {
         x: Math.random() * W,
         y: init ? Math.random() * H : H + 24 + Math.random() * 60,
-        r: 1.2 + Math.random() * 2.4,
-        vy: 0.28 + Math.random() * 0.7,
+        r: big ? 3.6 + Math.random() * 1.4 : 1.2 + Math.random() * 2.4,
+        vy: (big ? 0.14 : 0.3) + Math.random() * 0.6,
         sway: Math.random() * Math.PI * 2,
         sw: 0.008 + Math.random() * 0.02,
         phase: Math.random() * Math.PI * 2,
-        tw: 0.5 + Math.random() * 0.9,
+        tw: big ? 0.9 + Math.random() * 0.4 : 0.5 + Math.random() * 0.9,
         c: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-        heart: Math.random() < 0.26,
+        heart: big || Math.random() < 0.3,
       };
     }
 
@@ -1621,12 +1629,37 @@
 
     function drawFrame() {
       ctx.clearRect(0, 0, W, H);
+      const pos = [];
       for (const p of parts) {
         p.y -= p.vy;
         p.sway += p.sw;
         p.phase += 0.05;
-        const x = p.x + Math.sin(p.sway) * 14;
-        const y = p.y;
+        pos.push([p.x + Math.sin(p.sway) * 14, p.y]);
+      }
+
+      ctx.lineWidth = 1;
+      for (let i = 0; i < parts.length; i++) {
+        for (let j = i + 1; j < parts.length; j++) {
+          const dx = pos[i][0] - pos[j][0];
+          const dy = pos[i][1] - pos[j][1];
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 12100) {
+            const d = Math.sqrt(d2);
+            ctx.globalAlpha = (1 - d / 110) * 0.15;
+            ctx.strokeStyle = "rgba(255, 214, 10, 1)";
+            ctx.beginPath();
+            ctx.moveTo(pos[i][0], pos[i][1]);
+            ctx.lineTo(pos[j][0], pos[j][1]);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        const x = pos[i][0];
+        const y = pos[i][1];
         if (y > -30) {
           const alpha = (0.30 + 0.28 * (0.5 + 0.5 * Math.sin(p.phase))) * p.tw;
           const col = "rgba(" + p.c + "," + alpha.toFixed(3) + ")";
@@ -1648,7 +1681,7 @@
     }
 
     resize();
-    for (let i = 0; i < 64; i++) parts.push(make(true));
+    for (let i = 0; i < 84; i++) parts.push(make(true));
 
     if (reduced) {
       drawFrame();
@@ -1703,6 +1736,46 @@
   }
 
   /* ------------------------------------------------------------
+     LLUVIA de corazones al entrar a una sección
+  ------------------------------------------------------------ */
+  function heartsRain() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const glyphs = ["💛", "💛", "❤️", "💖", "✨", "🌼"];
+    for (let i = 0; i < 18; i++) {
+      const s = document.createElement("span");
+      s.className = "rain-heart";
+      s.textContent = glyphs[i % glyphs.length];
+      s.style.setProperty("--lx", (Math.random() * 100).toFixed(1) + "%");
+      s.style.setProperty("--sz", (15 + Math.random() * 14).toFixed(1) + "px");
+      s.style.setProperty("--fd", (2.4 + Math.random() * 1.6).toFixed(1) + "s");
+      s.style.setProperty("--ad", (Math.random() * 0.9).toFixed(2) + "s");
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 4300);
+    }
+  }
+
+  /* ------------------------------------------------------------
+     ESTELA de corazones al mover el dedo / cursor
+  ------------------------------------------------------------ */
+  function bindHeartTrail() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let last = 0;
+    document.addEventListener("pointermove", (e) => {
+      const now = performance.now();
+      if (now - last < 100) return;
+      last = now;
+      const s = document.createElement("span");
+      s.className = "trail-heart";
+      s.textContent = e.pointerType === "touch" ? "💛" : "❤️";
+      s.style.left = e.clientX + "px";
+      s.style.top = e.clientY + "px";
+      s.style.setProperty("--tx", (Math.random() * 44 - 22).toFixed(0) + "px");
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1500);
+    }, { passive: true });
+  }
+
+  /* ------------------------------------------------------------
      Boot
   ------------------------------------------------------------ */
   function boot() {
@@ -1721,6 +1794,8 @@
     try { seedMonthFloats(); } catch (e) { console.warn("mfloats:", e); }
     try { startLoveCanvas(); } catch (e) { console.warn("lovefield:", e); }
     try { bindTapSparkle(); } catch (e) { console.warn("tapspark:", e); }
+    try { bindHeartTrail(); } catch (e) { console.warn("trail:", e); }
+    try { startLiveCards(); } catch (e) { console.warn("livecards:", e); }
     try { startShootingStars(); } catch (e) { console.warn("stars:", e); }
     try { startButterflies(); } catch (e) { console.warn("butterflies:", e); }
     try { setupMusic(); } catch (e) { console.warn("music:", e); }
