@@ -5,14 +5,14 @@ window.PAGE_CONFIG = {
   },
 
   unlockDates: {
-    galaxy: new Date(2026, 8, 19), // 19 de septiembre
-    letter: new Date(2026, 8, 21), // 21 de septiembre
+    galaxy: new Date(2026, 8, 21), // 21 de septiembre
+    letter: new Date(2026, 8, 19), // 19 de septiembre
     timeline: new Date(2026, 8, 22) // 22 de septiembre
   },
 
   galaxy: {
     title: "Flores Amarillas",
-    subtitle: "19 de septiembre · Día de las Flores Amarillas",
+    subtitle: "21 de septiembre · Día de las Flores Amarillas",
     intro:
       "Dicen que regalar flores amarillas es un gesto de amor y si, lo es por eso hice esto para ti mi niña.",
     messages: [
@@ -46,7 +46,7 @@ window.PAGE_CONFIG = {
 
   letter: {
     title: "Amor y Amistad",
-    subtitle: "21 de septiembre · Un viaje entre galaxias",
+    subtitle: "19 de septiembre · Un viaje entre galaxias",
     journey: {
       kicker: "Alistá tu corazón: nos vamos de viaje entre galaxias 💫",
       messages: [
