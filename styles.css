@@ -288,46 +288,88 @@ img { -webkit-user-drag: none; user-select: none; }
   100% { transform: translateY(calc(-100% - 58vh)) rotate(340deg); opacity: 0; }
 }
 
-.galaxy-core {
+/* ---- corazón de partículas doradas (centro) ---- */
+.galaxy-heart {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  text-align: center;
+  z-index: 3;
+  width: 0;
+  height: 0;
   pointer-events: none;
-  width: 130px;
-  height: 130px;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 4px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 214, 10, 0.20), transparent 70%);
-  animation: coreBreathe 4s ease-in-out infinite;
+  animation: heartPulse 4s ease-in-out infinite;
 }
 
-@keyframes coreBreathe {
+@keyframes heartPulse {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50%      { transform: translate(-50%, -50%) scale(1.08); }
+  50%      { transform: translate(-50%, -50%) scale(1.07); }
 }
 
-.core-emoji {
-  display: block;
-  font-size: 30px;
-  animation: spinSlow 14s linear infinite;
+.galaxy-heart::after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  left: -105px;
+  top: -105px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 10, 0.30), rgba(255, 214, 10, 0.07) 46%, transparent 70%);
+  animation: heartHalo 3.5s ease-in-out infinite;
 }
 
-@keyframes spinSlow {
-  to { transform: rotate(360deg); }
+@keyframes heartHalo {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%      { transform: scale(1.12); opacity: 1; }
 }
 
-.core-text {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: rgba(255, 214, 10, 0.8);
+.gh-dot {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffe14d;
+  box-shadow: 0 0 6px rgba(255, 214, 10, 0.9);
+  animation: twinkle var(--tw, 2.6s) ease-in-out infinite;
+  animation-delay: var(--md, 0s);
+  transform: translate(calc(var(--hx) * 1px), calc(var(--hy) * 1px));
+}
+
+.gh-dot.gh-glow {
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 214, 10, 0.55);
+  box-shadow: 0 0 14px 3px rgba(255, 214, 10, 0.55);
+}
+
+/* ---- mensajes románticos flotando ---- */
+.galaxy-messages {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.galaxy-msg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #fff8e1;
+  text-shadow: 0 0 12px rgba(255, 214, 10, 0.85);
+  opacity: 0;
+  animation: msgFade var(--dm, 6s) ease-in-out infinite;
+  animation-delay: var(--md, 0s);
+  white-space: nowrap;
+}
+
+.galaxy-msg.gold {
+  color: var(--yellow-soft);
+}
+
+@keyframes msgFade {
+  0%, 100% { opacity: 0; transform: translate(-50%, -50%) translateY(6px); }
+  15%, 85% { opacity: 0.95; transform: translate(-50%, -50%) translateY(0); }
 }
 
 /* ---- disco de la galaxia: fotos en espiral girando ---- */

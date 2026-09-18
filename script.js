@@ -184,6 +184,48 @@
       }
     }
 
+    function buildHeart() {
+      const host = $("#galaxy-heart");
+      if (host.childElementCount) return;
+      const pts = 80;
+      const scale = 5.2;
+      for (let i = 0; i < pts; i++) {
+        const t = (i / pts) * Math.PI * 2;
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        const dot = document.createElement("div");
+        dot.className = "gh-dot";
+        if (i % 5 === 0) dot.classList.add("gh-glow");
+        dot.style.setProperty("--hx", (x * scale + (0.8 - Math.random() * 1.6)).toFixed(1));
+        dot.style.setProperty("--hy", (y * scale + (0.8 - Math.random() * 1.6)).toFixed(1));
+        dot.style.setProperty("--tw", (1.8 + Math.random() * 2.4).toFixed(1) + "s");
+        dot.style.setProperty("--md", (-Math.random() * 3).toFixed(2) + "s");
+        host.appendChild(dot);
+      }
+    }
+
+    function buildMessages() {
+      const host = $("#galaxy-messages");
+      if (host.childElementCount) return;
+      const msgs = C.galaxy.messages || [];
+      const slots = [
+        { x: 16, y: 26 }, { x: 84, y: 24 }, { x: 12, y: 56 }, { x: 88, y: 50 },
+        { x: 30, y: 10 }, { x: 70, y: 12 }, { x: 24, y: 82 }, { x: 76, y: 80 },
+        { x: 50, y: 90 }, { x: 92, y: 30 }, { x: 8, y: 38 }, { x: 50, y: 10 }
+      ];
+      msgs.forEach((txt, i) => {
+        if (!slots[i]) return;
+        const m = document.createElement("div");
+        m.className = "galaxy-msg" + (i % 3 === 0 ? " gold" : "");
+        m.textContent = txt;
+        m.style.left = slots[i].x + "%";
+        m.style.top = slots[i].y + "%";
+        m.style.setProperty("--dm", (4.5 + (i % 4) * 0.8).toFixed(1) + "s");
+        m.style.setProperty("--md", (-(i * 1.3)).toFixed(1) + "s");
+        host.appendChild(m);
+      });
+    }
+
     function seed() {
       const wrap = $("#galaxy-photos");
       if (!wrap || photoEls.length === C.galaxy.photos.length) return;
@@ -196,6 +238,8 @@
 
       buildStars();
       buildPetals();
+      buildHeart();
+      buildMessages();
 
       wrap.innerHTML = "";
       photoEls = [];
