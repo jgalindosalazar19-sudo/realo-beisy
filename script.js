@@ -119,6 +119,7 @@
     const target = $("#view-" + name);
     if (target) target.classList.add("active");
     window.scrollTo({ top: 0, behavior: "instant" });
+    document.body.dataset.view = name;
   }
 
   function bindNav() {
@@ -408,6 +409,10 @@
       }
 
       function loop() {
+        if (!running || document.hidden || document.body.dataset.view !== "galaxy") {
+          raf = 0;
+          return;
+        }
         const w = W(),
           h = H();
         if (w > 0 && h > 0) {
@@ -1815,7 +1820,7 @@
     }
 
     function loop() {
-      if (!running) return;
+      if (!running) return; if (document.body.dataset.view === "galaxy") { raf = requestAnimationFrame(loop); return; }
       drawFrame();
       raf = requestAnimationFrame(loop);
     }
@@ -1961,12 +1966,12 @@
       );
 
     window.__tsP = window.tsParticles.load(host, {
-      fpsLimit: 60,
+      fpsLimit: 40,
       pauseOnBlur: true,
       detectRetina: true,
       background: { color: "transparent" },
       particles: {
-        number: { value: 70 },
+        number: { value: 34 },
         color: { value: ["#ffd60a", "#ffe14d", "#ff8fab", "#fff8e1"] },
         shape: { type: "image", options: { image: [
           { src: emojiUrl("🩶"), width: 48, height: 48 },
