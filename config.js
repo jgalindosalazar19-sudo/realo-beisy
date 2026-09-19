@@ -74,8 +74,8 @@ window.PAGE_CONFIG = {
 
   timeline: {
     title: "Nuestro Mes",
-    subtitle: "22 de septiembre · Un mes juntos",
-    lockTitle: "Feliz mes mi amor",
+    subtitle: "22 de septiembre · 7 meses juntos",
+    lockTitle: "Felices 7 meses, mi amor",
     lockHint: "Ingresá fecha de noviazgo",
     pinCode: "02222026",
     anniversary: new Date(2026, 1, 22, 10, 3, 0),
@@ -83,12 +83,12 @@ window.PAGE_CONFIG = {
     celebrationTitle: "¿Qué va a ser? 🩶",
     celebrationCTAs: ["¿Qué va a ser? 👇", "Quedate un mes más", "Quedate otro mes más", "Quedate para siempre 🩶"],
     letter: {
-      title: "Para mi niña, un mes de nosotros 💌",
+      title: "Para mi princesa hermosa 💌",
       body: [
-        "Mi amor, hoy hace un mes que el universo alineó sus galaxias para cruzarnos y yo, sin darme cuenta, empecé el capítulo más hermoso de mi vida.",
-        "Un mes es poquito comparado con todo lo que viene, pero a mí me alcanza para saber que sos mi lugar, mi calma, mi persona favorita en todo el mundo.",
-        "Gracias por cada buenos días, por cada risa, por cada te amo. Gracias por dejarme amarte y por amarme así de lindo.",
-        "Feliz mes, mi niña. Quiero cien más, mil más, toda la vida."
+        "Mi princesa hermosa: el día de hoy quiero decirte que estamos cumpliendo 7 meses de tener esta hermosa y maravillosa relación.",
+        "Mi amor precioso, te amo con todo mi ser. Independientemente de cualquier percance y mal rato que hayamos tenido, quiero que sepas que te amo, que tendremos nuestra relación soñada y que seremos los más felices del mundo.",
+        "Todo saldrá excelente, mi niña hermosa. Te amo con todo mi ser, mi princesa.",
+        "¡Felices 7 meses, mi niña hermosa! 🩶"
       ],
       signature: "— Tu persona, con todo mi amor 🩶"
     },
